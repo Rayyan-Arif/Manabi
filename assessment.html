@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Manabi — Learning Style Assessment</title>
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+	<style>
+		:root{--primary:#1d4769;--accent:#e8f2fa;--muted:#64748b;--bg:#f8fafc}
+		html,body{height:100%}
+		body{font-family:'Inter', system-ui, -apple-system, 'Poppins', 'Segoe UI', Roboto, sans-serif;background:var(--bg);color:#071029}
+		.glass{background:rgba(255,255,255,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(29,71,105,0.06)}
+		body.dark{background:#071029;color:#e6eef9}
+		body.dark .glass{background:rgba(7,16,41,0.55);border:1px solid rgba(255,255,255,0.04)}
+		.btn-primary{background:linear-gradient(90deg,var(--primary),#23597f);color:white}
+		.btn-primary:hover{box-shadow:0 8px 30px rgba(29,71,105,0.18);transform:translateY(-2px)}
+		.option-selected{outline:3px solid rgba(29,71,105,0.12);box-shadow:0 8px 24px rgba(29,71,105,0.08);transform:scale(1.02)}
+		.progress-track{height:8px;background:rgba(29,71,105,0.08);border-radius:999px}
+		.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),#2d5a8c);border-radius:999px;width:0%}
+		/* custom slider */
+		input[type=range]{width:100%;height:8px;background:transparent}
+		input[type=range]::-webkit-slider-runnable-track{height:8px;background:linear-gradient(90deg,var(--primary),#2d5a8c);border-radius:999px}
+		input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;margin-top:-8px;width:28px;height:28px;border-radius:50%;background:white;border:4px solid var(--primary);box-shadow:0 8px 20px rgba(29,71,105,0.18)}
+		.confetti-piece{position:fixed;will-change:transform,opacity;z-index:9999}
+		/* small utilities */
+		.glass-soft{background:linear-gradient(180deg,rgba(255,255,255,0.85),rgba(255,255,255,0.72));border-radius:16px;padding:1.5rem}
+		@media (max-width:900px){.layout-cols{grid-template-columns:1fr}.sidebar{display:none}}
+	</style>
+</head>
+<body>
+	<!-- NAV -->
+	<header class="sticky top-0 z-40 glass px-6 py-3 shadow-sm">
+		<div class="max-w-5xl mx-auto flex items-center justify-between">
+			<div class="flex items-center gap-4">
+				<div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,var(--primary),#2d5a8c);display:flex;align-items:center;justify-content:center;color:white;font-weight:700">M</div>
+				<div>
+					<div style="font-weight:700;font-size:1rem">Manabi</div>
+					<div style="font-size:0.8rem;color:var(--muted)">Adaptive assessment</div>
+				</div>
+			</div>
+
+			<div class="flex items-center gap-4">
+				<div class="text-sm text-slate-500">Step <span id="stepNum">1</span> of <span id="stepTotal">10</span></div>
+				<div class="w-48">
+					<div class="progress-track rounded-full overflow-hidden">
+						<div id="topProgress" class="progress-fill"></div>
+					</div>
+				</div>
+				<button id="themeToggle" class="p-2 rounded-full glass" title="Toggle theme">🌙</button>
+			</div>
+		</div>
+	</header>
+
+	<!-- MAIN -->
+	<main class="max-w-5xl mx-auto mt-10 px-6">
+		<div class="grid layout-cols grid-cols-[1fr_340px] gap-8">
+			<!-- center -->
+			<section class="pt-6">
+				<div id="cardWrap" class="glass-soft shadow-lg">
+					<div id="questionCard" class="glass p-8 rounded-2xl shadow-md" style="min-height:260px">
+						<div class="flex items-start justify-between">
+							<div>
+								<div class="text-sm text-slate-500">Question <span id="qIndex">1</span> / <span id="qTotal">10</span></div>
+								<h2 id="qText" class="text-2xl font-semibold mt-2">Loading question...</h2>
+								<p id="qHint" class="text-sm text-slate-400 mt-2"></p>
+							</div>
+							<div id="iconWrap" class="text-3xl opacity-80">🧠</div>
+						</div>
+					</div>
+
+					<!-- dynamic answers -->
+					<div id="answers" class="mt-6 grid gap-4"></div>
+
+					<!-- slider bubble -->
+					<div id="sliderBubble" class="hidden text-sm px-3 py-2 bg-white rounded-full shadow-sm" style="position:absolute;z-index:20;">50%</div>
+
+					<!-- navigation -->
+					<div class="mt-6 flex items-center justify-between">
+						<button id="backBtn" class="px-4 py-2 rounded-full text-sm border border-gray-200" disabled>← Back</button>
+						<div class="flex items-center gap-3">
+							<button id="whyBtn" class="text-sm text-slate-500">Why this?</button>
+							<button id="nextBtn" class="btn-primary px-5 py-2 rounded-full text-sm disabled:opacity-50" disabled>Next →</button>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- sidebar -->
+			<aside class="sidebar">
+				<div class="glass-soft">
+					<h3 class="font-semibold">Why this assessment?</h3>
+					<p class="text-sm text-slate-500 mt-2">We ask a few quick questions to personalize lesson formats, pace, and accessibility. This takes 1–2 minutes and improves your learning path.</p>
+					<div class="mt-4">
+						<h4 class="text-sm font-semibold">Your progress</h4>
+						<div class="progress-track mt-2"><div id="sideProgress" class="progress-fill" style="width:0%"></div></div>
+						<div class="flex items-center justify-between mt-2 text-xs text-slate-500"><span id="percentLabel">0%</span><span>Ready</span></div>
+					</div>
+					<div class="mt-4">
+						<h4 class="text-sm font-semibold">What we detect</h4>
+						<div id="detected" class="mt-2 text-sm text-slate-600">No data yet</div>
+					</div>
+				</div>
+			</aside>
+		</div>
+	</main>
+
+	<!-- completion modal (hidden) -->
+	<div id="completeScreen" class="fixed inset-0 flex items-center justify-center bg-black/40 hidden z-50">
+		<div class="glass p-8 rounded-2xl max-w-xl text-center">
+			<div class="text-5xl mb-4">🎉</div>
+			<h2 class="text-2xl font-bold">Assessment Complete</h2>
+			<p class="text-slate-500 mt-2">Your Personalized Learning Path Is Ready!</p>
+			<div class="mt-6 flex justify-center gap-4">
+				<button id="viewPath" class="btn-primary px-6 py-2 rounded-full">View Learning Path</button>
+				<button id="closeComplete" class="px-4 py-2 rounded-full border">Close</button>
+			</div>
+		</div>
+	</div>
+
+	<footer class="max-w-5xl mx-auto text-center text-sm text-slate-500 mt-12 mb-8">© 2025 Manabi — Adaptive Learning Starts Here</footer>
+
+	<!-- <script>
+		// -- Config & Data
+		const PRIMARY = '#1d4769';
+		const TOTAL = 10;
+		const questions = [
+			{id:1,type:'mcq',q:'When learning a new topic, do you prefer diagrams or text?',choices:['Mostly diagrams','Mostly text','Both equally','Short videos'],hint:'Choose the option that feels most natural.'},
+			{id:2,type:'slider',q:'How comfortable are you with reading long text?',min:0,max:100,default:50,unit:'%','hint':'Slide to indicate comfort level.'},
+			{id:3,type:'image',q:'Which visual feels clearer to you?',images:[ 'A','B','C' ],hint:'Pick the image that looks clearest.'},
+			{id:4,type:'chips',q:'Preferred learning pace?',chips:['Slow','Medium','Fast'],hint:'This guides the lesson speed.'},
+			{id:5,type:'mcq',q:'Do you prefer step-by-step examples or abstract theory?',choices:['Examples','Theory','Mix','Depends'],hint:''},
+			{id:6,type:'slider',q:'How long can you comfortably focus in one sitting (minutes)?',min:5,max:60,default:25,unit:'min',hint:''},
+			{id:7,type:'mcq',q:'Do you prefer audio explanations?',choices:['Yes, often','Sometimes','Rarely','Never'],hint:''},
+			{id:8,type:'mcq',q:'Do predictable layouts help you focus?',choices:['Always','Sometimes','Not really'],hint:'Important for autism-friendly UI.'},
+			{id:9,type:'chips',q:'Which content style helps you most?',chips:['Simple','Detailed','Examples','Mixed'],hint:''},
+			{id:10,type:'mcq',q:'Do you prefer interactive activities during a lesson?',choices:['Yes','Sometimes','No'],hint:''}
+		];
+
+		// -- State
+		let state = { index:0, answers: new Array(TOTAL).fill(null) };
+
+		// -- Elements
+		const qIndex = document.getElementById('qIndex');
+		const qTotal = document.getElementById('qTotal');
+		const qText = document.getElementById('qText');
+		const qHint = document.getElementById('qHint');
+		const answersEl = document.getElementById('answers');
+		const nextBtn = document.getElementById('nextBtn');
+		const backBtn = document.getElementById('backBtn');
+		const topProgress = document.getElementById('topProgress');
+		const sideProgress = document.getElementById('sideProgress');
+		const percentLabel = document.getElementById('percentLabel');
+		const detected = document.getElementById('detected');
+		const qTotalEl = document.getElementById('qTotal');
+		const stepNum = document.getElementById('stepNum');
+
+		qTotalEl.textContent = TOTAL;
+		stepNum.textContent = 1;
+
+		// -- Utility: animate progress
+		function updateProgress() {
+			const pct = Math.round((state.index / TOTAL) * 100);
+			gsap.to(topProgress, {width: `${pct}%`, duration: 0.6, ease:'power2.out'});
+			gsap.to(sideProgress, {width: `${pct}%`, duration: 0.6, ease:'power2.out'});
+			percentLabel.textContent = pct + '%';
+			document.getElementById('stepNum').textContent = Math.min(state.index+1,TOTAL);
+		}
+
+		// -- Render current question
+		function render() {
+			const q = questions[state.index];
+			qIndex.textContent = state.index + 1;
+			qText.textContent = q.q;
+			qHint.textContent = q.hint || '';
+			// icon
+			document.getElementById('iconWrap').textContent = ({mcq:'❓',slider:'🎚️',image:'🖼️',chips:'⚡'})[q.type] || '🧠';
+
+			// clear answers
+			answersEl.innerHTML = '';
+			nextBtn.disabled = state.answers[state.index] === null;
+
+			// render by type
+			if (q.type === 'mcq') {
+				const grid = document.createElement('div'); grid.className='grid gap-3 md:grid-cols-2';
+				q.choices.forEach((c,i)=>{
+					const btn = document.createElement('button');
+					btn.className = 'glass p-4 rounded-lg text-left hover:scale-[1.01] transition-transform';
+					btn.innerHTML = `<div class="flex items-center justify-between"><div>${c}</div><div class="opacity-0 check">✔️</div></div>`;
+					btn.onclick = ()=>selectMCQ(i,btn);
+					if (state.answers[state.index] && state.answers[state.index].choice===i) btn.classList.add('option-selected');
+					grid.appendChild(btn);
+				});
+				answersEl.appendChild(grid);
+				gsap.from(grid.children, {opacity:0,y:10,stagger:0.06,duration:0.42});
+			}
+
+			if (q.type === 'slider') {
+				const wrap = document.createElement('div'); wrap.className='space-y-4';
+				const value = state.answers[state.index]?.value ?? q.default ?? Math.round((q.min+q.max)/2);
+				const el = document.createElement('div');
+				el.innerHTML = `
+					<div class="text-sm text-slate-500">${value}${q.unit? ' ' + q.unit:''}</div>
+					<input id="rangeInput" type="range" min="${q.min}" max="${q.max}" value="${value}" />
+				`;
+				wrap.appendChild(el);
+				answersEl.appendChild(wrap);
+
+				const range = document.getElementById('rangeInput');
+				range.addEventListener('input', (ev)=>{
+					const v = ev.target.value;
+					state.answers[state.index] = {value: v};
+					el.querySelector('.text-sm').textContent = v + (q.unit? ' ' + q.unit:'');
+					nextBtn.disabled = false;
+				});
+				gsap.from(el, {opacity:0,y:8,duration:0.4});
+			}
+
+			if (q.type === 'image') {
+				const row = document.createElement('div'); row.className='grid md:grid-cols-3 gap-3';
+				q.images.forEach((lbl,i)=>{
+					const card = document.createElement('div');
+					card.className='p-2 rounded-xl glass cursor-pointer flex flex-col items-center gap-3';
+					card.style.minHeight='120px';
+					card.innerHTML = `<svg width="80" height="60" viewBox="0 0 80 60" class="rounded-md" style="background:linear-gradient(90deg,rgba(29,71,105,0.06),rgba(45,90,140,0.04));border-radius:8px"><rect width="80" height="60" fill="none"/></svg><div class="text-sm font-medium">${lbl}</div>`;
+					card.onclick = ()=>{
+						document.querySelectorAll('#answers .option-selected').forEach(n=>n.classList.remove('option-selected'));
+						card.classList.add('option-selected');
+						state.answers[state.index] = {choice:i,label:lbl};
+						nextBtn.disabled = false;
+					};
+					if (state.answers[state.index] && state.answers[state.index].choice===i) card.classList.add('option-selected');
+					row.appendChild(card);
+				});
+				answersEl.appendChild(row);
+				gsap.from(row.children, {opacity:0,y:8,stagger:0.06,duration:0.42});
+			}
+
+			if (q.type === 'chips') {
+				const row = document.createElement('div'); row.className='flex gap-3 flex-wrap';
+				q.chips.forEach((c,i)=>{
+					const chip = document.createElement('button');
+					chip.className='px-4 py-2 rounded-full border border-slate-200 text-sm glass';
+					chip.textContent = c;
+					chip.onclick = ()=>{
+						document.querySelectorAll('#answers .option-selected').forEach(n=>n.classList.remove('option-selected'));
+						chip.classList.add('option-selected');
+						state.answers[state.index] = {choice:i,label:c};
+						nextBtn.disabled = false;
+					};
+					if (state.answers[state.index] && state.answers[state.index].choice===i) chip.classList.add('option-selected');
+					row.appendChild(chip);
+				});
+				answersEl.appendChild(row);
+				gsap.from(row.children, {opacity:0,y:8,stagger:0.04,duration:0.36});
+			}
+
+			// accessibility: focus
+			setTimeout(()=>{const first = answersEl.querySelector('button, input'); if(first) first.focus()},80);
+			updateProgress();
+		}
+
+		// selection handlers
+		function selectMCQ(i,btn){
+			// deselect others
+			answersEl.querySelectorAll('button').forEach(b=>b.classList.remove('option-selected'));
+			btn.classList.add('option-selected');
+			state.answers[state.index] = {choice:i,label: btn.innerText.trim()};
+			nextBtn.disabled = false;
+		}
+
+		// navigation
+		nextBtn.addEventListener('click', ()=>{
+			if (state.index < TOTAL-1) {
+				state.index++;
+				render();
+			} else {
+				finishAssessment();
+			}
+		});
+
+		backBtn.addEventListener('click', ()=>{
+			if (state.index>0) { state.index--; render(); }
+		});
+
+		// keyboard nav
+		window.addEventListener('keydown', (e)=>{
+			if (e.key === 'ArrowRight') nextBtn.click();
+			if (e.key === 'ArrowLeft') backBtn.click();
+		});
+
+		// why drawer
+		document.getElementById('whyBtn').addEventListener('click', ()=>{
+			const side = document.querySelector('.sidebar');
+			gsap.to(side, {x: side.style.display==='none' ? 0 : 0, duration:0.4});
+			// small pulse
+			gsap.fromTo(side, {opacity:0,x:30}, {opacity:1,x:0,duration:0.45});
+		});
+
+		// finish
+		function finishAssessment(){
+			// basic detection heuristic
+			const answers = state.answers;
+			let visualScore=0, audioScore=0, analogScore=0, dynamicScore=0, accessibilityScore=0;
+			answers.forEach((a,i)=>{
+				const q=questions[i];
+				if(!a) return;
+				if(q.type==='mcq'){
+					const txt = String(a.label||'').toLowerCase();
+					if(txt.includes('diagram')||txt.includes('diagrams')||txt.includes('visual')) visualScore+=2;
+					if(txt.includes('audio')||txt.includes('listen')) audioScore+=2;
+					if(txt.includes('examples')||txt.includes('example')) analogScore+=1;
+					if(txt.includes('interactive')||txt.includes('interactive')) dynamicScore+=2;
+					if(txt.includes('predictable')||txt.includes('always')) accessibilityScore+=2;
+				}
+				if(q.type==='slider'){
+					const v = Number(a.value);
+					if(q.unit==='min' && v<15) accessibilityScore+=1;
+					if(q.unit==='%' && v>65) visualScore+=1;
+				}
+				if(q.type==='image'){ visualScore+=2 }
+				if(q.type==='chips'){
+					if(a.label && a.label.toLowerCase().includes('fast')) dynamicScore+=2;
+					if(a.label && a.label.toLowerCase().includes('slow')) accessibilityScore+=1;
+				}
+			});
+
+			const scores = [{k:'Visual',v:visualScore},{k:'Audio',v:audioScore},{k:'Analogical',v:analogScore},{k:'Dynamic',v:dynamicScore},{k:'Accessibility',v:accessibilityScore}];
+			scores.sort((a,b)=>b.v-a.v);
+			const best = scores[0];
+
+			// show detected
+			detected.innerHTML = `<strong>${best.k}</strong> (top fit)`;
+
+			// show completion screen
+			const overlay = document.getElementById('completeScreen');
+			overlay.classList.remove('hidden');
+			overlay.style.display='flex';
+			gsap.fromTo('#completeScreen .glass',{scale:0.96,opacity:0},{scale:1,opacity:1,duration:0.45});
+			runConfetti();
+		}
+
+		// confetti
+		function runConfetti(){
+			const count = 40; const colors=[PRIMARY,'#ffb86b','#6fe7c4','#ffd6e0','#e8f2fa'];
+			for(let i=0;i<count;i++){
+				const el = document.createElement('div');
+				el.className='confetti-piece';
+				el.style.width = Math.random()*10+6+'px';
+				el.style.height = Math.random()*14+6+'px';
+				el.style.background = colors[Math.floor(Math.random()*colors.length)];
+				el.style.left = Math.random()*100+'%';
+				el.style.top = '-10%';
+				el.style.opacity = 1;
+				document.body.appendChild(el);
+				gsap.to(el, {y: window.innerHeight + 200, x: (Math.random()-0.5)*300, rotation: Math.random()*720, duration: 2+Math.random()*1.6, ease:'power2.out', onComplete:()=>el.remove()});
+			}
+		}
+
+		// theme toggle
+		const themeToggle = document.getElementById('themeToggle');
+		const saved = localStorage.getItem('m-theme')||'light';
+		function applyTheme(t){
+			if(t==='dark'){ document.body.classList.add('dark'); themeToggle.textContent='☀️'; } else { document.body.classList.remove('dark'); themeToggle.textContent='🌙'; }
+			localStorage.setItem('m-theme',t);
+		}
+		applyTheme(saved);
+		themeToggle.addEventListener('click', ()=> applyTheme(document.body.classList.contains('dark')?'light':'dark'));
+
+		// initialize
+		function init(){
+			render();
+			updateProgress();
+		}
+
+		// keyboard: enable enter to next if answered
+		window.addEventListener('keydown',(e)=>{
+			if(e.key==='Enter' && !nextBtn.disabled) nextBtn.click();
+		});
+
+		// close completion
+		document.getElementById('closeComplete').addEventListener('click', ()=>{
+			document.getElementById('completeScreen').classList.add('hidden');
+		});
+		document.getElementById('viewPath').addEventListener('click', ()=>{
+			showToast('Opening your learning path...');
+			document.getElementById('completeScreen').classList.add('hidden');
+		});
+
+		// small toast util
+		function showToast(txt){
+			const t = document.createElement('div'); t.className='toast'; t.textContent=txt; document.body.appendChild(t);
+			gsap.fromTo(t,{opacity:0,y:20},{opacity:1,y:0,duration:0.3});
+			setTimeout(()=>gsap.to(t,{opacity:0,y:20,duration:0.3,onComplete:()=>t.remove()}),2200);
+		}
+
+		// start
+		init();
+	</script> -->
+</body>
+</html>

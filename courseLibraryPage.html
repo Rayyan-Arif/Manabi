@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manabi — Course Library</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "Montserrat", -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        background: #f8faff;
+        color: #333;
+      }
+
+      /* ==================== TOP NAVIGATION ==================== */
+      .top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 28px;
+        background: white;
+        border-bottom: 1px solid #e4e8f0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #4c6ef5, #77bdf2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .nav-center {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      .nav-right {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+
+      .nav-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 18px;
+      }
+
+      .nav-icon:hover {
+        background: #f0f4ff;
+        transform: scale(1.1);
+      }
+
+      .profile-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4c6ef5, #77bdf2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .profile-icon:hover {
+        transform: scale(1.08);
+      }
+
+      /* ==================== CONTAINER ==================== */
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 28px;
+      }
+
+      /* ==================== SEARCH & FILTERS ==================== */
+      .filters-section {
+        background: white;
+        border-radius: 14px;
+        padding: 20px 24px;
+        margin-bottom: 32px;
+        border: 1px solid #e4e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      }
+
+      .filters-wrapper {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-bar {
+        flex: 1;
+        min-width: 200px;
+        display: flex;
+        align-items: center;
+        background: #f8faff;
+        border: 1px solid #dce3ff;
+        border-radius: 12px;
+        padding: 10px 14px;
+        transition: all 0.3s ease;
+      }
+
+      .search-bar:focus-within {
+        border-color: #4c6ef5;
+        box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
+        background: white;
+      }
+
+      .search-icon {
+        color: #999;
+        margin-right: 8px;
+        font-size: 16px;
+      }
+
+      .search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        outline: none;
+        font-size: 14px;
+        color: #333;
+        font-family: inherit;
+      }
+
+      .search-input::placeholder {
+        color: #bbb;
+      }
+
+      .filter-group {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .filter-select {
+        padding: 8px 12px;
+        border: 1px solid #dce3ff;
+        border-radius: 20px;
+        background: white;
+        color: #333;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+      }
+
+      .filter-select:hover {
+        border-color: #4c6ef5;
+        background: #f8faff;
+      }
+
+      .filter-select:focus {
+        outline: none;
+        border-color: #4c6ef5;
+        box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
+      }
+
+      /* ==================== FEATURED CAROUSEL ==================== */
+      .featured-section {
+        margin-bottom: 48px;
+      }
+
+      .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .carousel-container {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        padding-bottom: 12px;
+        scroll-behavior: smooth;
+      }
+
+      .carousel-container::-webkit-scrollbar {
+        height: 6px;
+      }
+
+      .carousel-container::-webkit-scrollbar-track {
+        background: #f0f4ff;
+        border-radius: 10px;
+      }
+
+      .carousel-container::-webkit-scrollbar-thumb {
+        background: #4c6ef5;
+        border-radius: 10px;
+      }
+
+      .featured-card {
+        flex: 0 0 280px;
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid #e4e8f0;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .featured-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(76, 110, 245, 0.15);
+        border-color: #4c6ef5;
+      }
+
+      .featured-thumbnail {
+        width: 100%;
+        height: 140px;
+        background: linear-gradient(135deg, #e8f0ff, #f0f8ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        border-bottom: 1px solid #e4e8f0;
+      }
+
+      .featured-content {
+        padding: 16px;
+      }
+
+      .featured-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 4px;
+      }
+
+      .featured-instructor {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 8px;
+      }
+
+      .featured-tag {
+        display: inline-block;
+        background: #eef3ff;
+        color: #4c6ef5;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      /* ==================== COURSE GRID ==================== */
+      .courses-section {
+        margin-bottom: 48px;
+      }
+
+      .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+      }
+
+      .course-card {
+        background: white;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid #e4e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .course-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 28px rgba(76, 110, 245, 0.12);
+        border-color: #4c6ef5;
+      }
+
+      .course-thumbnail {
+        width: 100%;
+        height: 160px;
+        background: linear-gradient(135deg, #e8f0ff, #f0f8ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 56px;
+        border-bottom: 1px solid #e4e8f0;
+      }
+
+      .course-content {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .course-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+        line-height: 1.3;
+      }
+
+      .course-description {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 12px;
+        line-height: 1.4;
+        flex: 1;
+      }
+
+      .course-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+
+      .course-tag {
+        background: #eef3ff;
+        color: #4c6ef5;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .progress-bar-container {
+        width: 100%;
+        height: 6px;
+        background: #e5eaf2;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 12px;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #4c6ef5, #77bdf2);
+        border-radius: 3px;
+        transition: width 0.6s ease;
+      }
+
+      .course-button {
+        padding: 10px 16px;
+        background: linear-gradient(135deg, #4c6ef5, #5d7eff);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+      }
+
+      .course-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(76, 110, 245, 0.3);
+      }
+
+      .course-button.secondary {
+        background: white;
+        color: #4c6ef5;
+        border: 2px solid #4c6ef5;
+      }
+
+      .course-button.secondary:hover {
+        background: #f8faff;
+      }
+
+      /* ==================== RECOMMENDED SECTION ==================== */
+      .recommended-section {
+        margin-bottom: 48px;
+      }
+
+      .recommended-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 16px;
+      }
+
+      .recommended-card {
+        background: linear-gradient(135deg, #e8f0ff, #f0f8ff);
+        border: 1px solid #dce3ff;
+        border-radius: 12px;
+        padding: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .recommended-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(76, 110, 245, 0.15);
+        border-color: #4c6ef5;
+      }
+
+      .recommended-icon {
+        font-size: 28px;
+        flex-shrink: 0;
+      }
+
+      .recommended-content {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .recommended-label {
+        font-size: 12px;
+        color: #4c6ef5;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        margin-bottom: 4px;
+      }
+
+      .recommended-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        line-height: 1.3;
+      }
+
+      /* ==================== FOOTER ==================== */
+      .footer {
+        background: white;
+        border-top: 1px solid #e4e8f0;
+        padding: 28px;
+        margin-top: 48px;
+      }
+
+      .footer-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+
+      .footer-link {
+        color: #8a8a8a;
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.2s ease;
+      }
+
+      .footer-link:hover {
+        color: #4c6ef5;
+      }
+
+      .footer-version {
+        color: #8a8a8a;
+        font-size: 13px;
+      }
+
+      /* ==================== ANIMATIONS ==================== */
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .course-card {
+        animation: slideInUp 0.5s ease-out;
+        animation-fill-mode: both;
+      }
+
+      .course-card:nth-child(1) {
+        animation-delay: 0.05s;
+      }
+      .course-card:nth-child(2) {
+        animation-delay: 0.1s;
+      }
+      .course-card:nth-child(3) {
+        animation-delay: 0.15s;
+      }
+      .course-card:nth-child(4) {
+        animation-delay: 0.2s;
+      }
+      .course-card:nth-child(n + 5) {
+        animation-delay: 0.25s;
+      }
+
+      /* ==================== RESPONSIVE ==================== */
+      @media (max-width: 1024px) {
+        .course-grid {
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 16px;
+        }
+
+        .top-nav {
+          padding: 12px 16px;
+        }
+
+        .filters-wrapper {
+          flex-direction: column;
+        }
+
+        .search-bar {
+          width: 100%;
+          min-width: auto;
+        }
+
+        .filter-group {
+          width: 100%;
+          flex-wrap: wrap;
+        }
+
+        .filter-select {
+          flex: 1;
+          min-width: 120px;
+        }
+
+        .course-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .carousel-container {
+          gap: 16px;
+        }
+
+        .featured-card {
+          flex: 0 0 90vw;
+        }
+
+        .recommended-container {
+          grid-template-columns: 1fr;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .footer-links {
+          flex-direction: column;
+        }
+      }
+
+      /* ==================== SCROLLBAR ==================== */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #d0d8e0;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #b8c0cc;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ==================== TOP NAVIGATION ==================== -->
+    <div class="top-nav">
+      <div class="logo">Manabi</div>
+      <div class="nav-center">Course Library</div>
+      <div class="nav-right">
+        <div class="nav-icon" onclick="openSearch()">🔍</div>
+        <div class="profile-icon">R</div>
+      </div>
+    </div>
+
+    <!-- ==================== MAIN CONTAINER ==================== -->
+    <div class="container">
+      <!-- ==================== SEARCH & FILTERS ==================== -->
+      <div class="filters-section">
+        <div class="filters-wrapper">
+          <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search courses…"
+              id="searchInput"
+            />
+          </div>
+
+          <div class="filter-group">
+            <select class="filter-select" id="categoryFilter">
+              <option value="">All Categories</option>
+              <option value="Programming">Programming</option>
+              <option value="Math">Math</option>
+              <option value="Science">Science</option>
+              <option value="AI & ML">AI & ML</option>
+              <option value="Visual Learning">Visual Learning</option>
+              <option value="Audio-Based">Audio-Based Lessons</option>
+            </select>
+
+            <select class="filter-select" id="difficultyFilter">
+              <option value="">All Levels</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+
+            <select class="filter-select" id="durationFilter">
+              <option value="">All Durations</option>
+              <option value="<10">&lt;10 mins</option>
+              <option value="10-30">10–30 mins</option>
+              <option value="30+">30+ mins</option>
+            </select>
+
+            <select class="filter-select" id="styleFilter">
+              <option value="">Learning Style</option>
+              <option value="Visual">Visual</option>
+              <option value="Analogical">Analogical</option>
+              <option value="Audio">Audio</option>
+              <option value="Dynamic">Dynamic</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== FEATURED COURSES ==================== -->
+      <div class="featured-section">
+        <h2 class="section-title">⭐ Continue....</h2>
+        <div class="carousel-container" id="featuredCarousel"></div>
+      </div>
+
+      <!-- ==================== COURSE GRID ==================== -->
+      <div class="courses-section">
+        <h2 class="section-title">📚 All Courses</h2>
+        <div class="course-grid" id="courseGrid"></div>
+      </div>
+
+      <!-- ==================== RECOMMENDED SECTION ==================== -->
+      <div class="recommended-section">
+        <h2 class="section-title">💡 Recommended For You</h2>
+        <div class="recommended-container" id="recommendedContainer"></div>
+      </div>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <div class="footer">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="#" class="footer-link">Help Center</a>
+          <a href="#" class="footer-link">Accessibility</a>
+          <a href="#" class="footer-link">Terms</a>
+          <a href="#" class="footer-link">Privacy</a>
+        </div>
+        <div class="footer-version">Version: Manabi v1.0</div>
+      </div>
+    </div>
+
+    <script>
+      // ==================== COURSE DATA ====================
+      const coursesData = [
+        {
+          id: 1,
+          title: "Python Fundamentals",
+          category: "Programming",
+          difficulty: "Beginner",
+          duration: "45",
+          style: "Visual",
+          description: "Learn the basics of Python programming",
+          icon: "🐍",
+          instructor: "Dr. Sarah Chen",
+          progress: 0,
+          featured: true,
+          adaptive: true,
+        },
+        {
+          id: 2,
+          title: "Data Structures 101",
+          category: "Programming",
+          difficulty: "Intermediate",
+          duration: "60",
+          style: "Analogical",
+          description: "Master arrays, linked lists, and trees",
+          icon: "🌳",
+          instructor: "Prof. James Lee",
+          progress: 35,
+          featured: true,
+          adaptive: false,
+        },
+        {
+          id: 3,
+          title: "Linear Algebra Basics",
+          category: "Math",
+          difficulty: "Beginner",
+          duration: "50",
+          style: "Visual",
+          description: "Vectors, matrices, and transformations",
+          icon: "📐",
+          instructor: "Dr. Emma Watson",
+          progress: 0,
+          featured: false,
+          adaptive: true,
+        },
+        {
+          id: 4,
+          title: "Web Development with React",
+          category: "Programming",
+          difficulty: "Advanced",
+          duration: "90",
+          style: "Dynamic",
+          description: "Build modern web applications",
+          icon: "⚛️",
+          instructor: "Marcus Johnson",
+          progress: 60,
+          featured: true,
+          adaptive: false,
+        },
+        {
+          id: 5,
+          title: "Machine Learning Basics",
+          category: "AI & ML",
+          difficulty: "Intermediate",
+          duration: "75",
+          style: "Analogical",
+          description: "Introduction to supervised learning",
+          icon: "🤖",
+          instructor: "Dr. Priya Sharma",
+          progress: 0,
+          featured: true,
+          adaptive: true,
+        },
+        {
+          id: 6,
+          title: "Calculus II",
+          category: "Math",
+          difficulty: "Advanced",
+          duration: "120",
+          style: "Audio",
+          description: "Integrals, series, and applications",
+          icon: "∫",
+          instructor: "Prof. Robert Miller",
+          progress: 20,
+          featured: false,
+          adaptive: false,
+        },
+        {
+          id: 7,
+          title: "Biology for Visual Learners",
+          category: "Science",
+          difficulty: "Beginner",
+          duration: "40",
+          style: "Visual",
+          description: "Cells, genetics, and evolution explained visually",
+          icon: "🧬",
+          instructor: "Dr. Lisa Zhang",
+          progress: 0,
+          featured: false,
+          adaptive: true,
+        },
+        {
+          id: 8,
+          title: "Algorithms & Problem Solving",
+          category: "Programming",
+          difficulty: "Advanced",
+          duration: "100",
+          style: "Dynamic",
+          description: "Solve complex problems with algorithms",
+          icon: "🔍",
+          instructor: "Prof. Alex Kumar",
+          progress: 45,
+          featured: false,
+          adaptive: true,
+        },
+        {
+          id: 9,
+          title: "Audio: Physics Concepts",
+          category: "Science",
+          difficulty: "Intermediate",
+          duration: "55",
+          style: "Audio",
+          description: "Motion, energy, and waves explained",
+          icon: "🌊",
+          instructor: "Dr. Thomas Brown",
+          progress: 0,
+          featured: false,
+          adaptive: false,
+        },
+        {
+          id: 10,
+          title: "UI/UX Design Principles",
+          category: "Visual Learning",
+          difficulty: "Beginner",
+          duration: "35",
+          style: "Visual",
+          description: "Create beautiful user experiences",
+          icon: "🎨",
+          instructor: "Design Studio Team",
+          progress: 0,
+          featured: false,
+          adaptive: true,
+        },
+        {
+          id: 11,
+          title: "Statistics Essentials",
+          category: "Math",
+          difficulty: "Intermediate",
+          duration: "65",
+          style: "Visual",
+          description: "Probability, distributions, and inference",
+          icon: "📊",
+          instructor: "Dr. Helen Park",
+          progress: 0,
+          featured: false,
+          adaptive: false,
+        },
+        {
+          id: 12,
+          title: "Cloud Computing with AWS",
+          category: "Programming",
+          difficulty: "Advanced",
+          duration: "85",
+          style: "Dynamic",
+          description: "Deploy applications on AWS",
+          icon: "☁️",
+          instructor: "CloudTech Academy",
+          progress: 0,
+          featured: false,
+          adaptive: true,
+        },
+      ];
+
+      const recommendedCourses = [
+        { icon: "👁️", title: "Visual-friendly lesson on Arrays" },
+        { icon: "📖", title: "Analogy-based explanation of Recursion" },
+        { icon: "🎧", title: "Audio lesson for Pointers" },
+        { icon: "⚡", title: "Interactive Deep Dive: OOP Concepts" },
+      ];
+
+      // ==================== RENDER FUNCTIONS ====================
+      function renderFeaturedCourses() {
+        const carousel = document.getElementById("featuredCarousel");
+        const featured = coursesData.filter((c) => c.featured);
+
+        carousel.innerHTML = featured
+          .map(
+            (course) => `
+                <div class="featured-card">
+                    <div class="featured-thumbnail">${course.icon}</div>
+                    <div class="featured-content">
+                        <div class="featured-title">${course.title}</div>
+                        <div class="featured-instructor">by ${course.instructor}</div>
+                        <span class="featured-tag">✓ Adaptive</span>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function renderCourses(courses = null) {
+        const grid = document.getElementById("courseGrid");
+        const toRender = courses || coursesData;
+
+        if (toRender.length === 0) {
+          grid.innerHTML =
+            '<div style="grid-column: 1/-1; text-align: center; padding: 48px 24px; color: #999;">No courses match your filters. Try adjusting your search.</div>';
+          return;
+        }
+
+        grid.innerHTML = toRender
+          .map(
+            (course) => `
+                <div class="course-card">
+                    <div class="course-thumbnail">${course.icon}</div>
+                    <div class="course-content">
+                        <h3 class="course-title">${course.title}</h3>
+                        <p class="course-description">${course.description}</p>
+                        <div class="course-tags">
+                            <span class="course-tag">${course.style}</span>
+                            <span class="course-tag">${course.difficulty}</span>
+                            <span class="course-tag">⏱️ ${
+                              course.duration
+                            } min</span>
+                        </div>
+                        ${
+                          course.progress > 0
+                            ? `
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: ${course.progress}%;"></div>
+                            </div>
+                        `
+                            : ""
+                        }
+                        <button class="course-button ${
+                          course.progress > 0 ? "secondary" : ""
+                        }">
+                            ${course.progress > 0 ? "✓ Enrolled" : "📌 Explore"}
+                        </button>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function renderRecommended() {
+        const container = document.getElementById("recommendedContainer");
+        container.innerHTML = recommendedCourses
+          .map(
+            (rec) => `
+                <div class="recommended-card">
+                    <div class="recommended-icon">${rec.icon}</div>
+                    <div class="recommended-content">
+                        <div class="recommended-label">Recommended</div>
+                        <div class="recommended-title">${rec.title}</div>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      // ==================== FILTER FUNCTIONALITY ====================
+      function applyFilters() {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const category = document.getElementById("categoryFilter").value;
+        const difficulty = document.getElementById("difficultyFilter").value;
+        const duration = document.getElementById("durationFilter").value;
+        const style = document.getElementById("styleFilter").value;
+
+        let filtered = coursesData.filter((course) => {
+          const matchesSearch =
+            course.title.toLowerCase().includes(searchTerm) ||
+            course.description.toLowerCase().includes(searchTerm);
+          const matchesCategory = !category || course.category === category;
+          const matchesDifficulty =
+            !difficulty || course.difficulty === difficulty;
+          const matchesStyle = !style || course.style === style;
+
+          let matchesDuration = true;
+          if (duration === "<10")
+            matchesDuration = parseInt(course.duration) < 10;
+          if (duration === "10-30")
+            matchesDuration =
+              parseInt(course.duration) >= 10 &&
+              parseInt(course.duration) <= 30;
+          if (duration === "30+")
+            matchesDuration = parseInt(course.duration) > 30;
+
+          return (
+            matchesSearch &&
+            matchesCategory &&
+            matchesDifficulty &&
+            matchesDuration &&
+            matchesStyle
+          );
+        });
+
+        renderCourses(filtered);
+      }
+
+      // ==================== EVENT LISTENERS ====================
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", applyFilters);
+      document
+        .getElementById("categoryFilter")
+        .addEventListener("change", applyFilters);
+      document
+        .getElementById("difficultyFilter")
+        .addEventListener("change", applyFilters);
+      document
+        .getElementById("durationFilter")
+        .addEventListener("change", applyFilters);
+      document
+        .getElementById("styleFilter")
+        .addEventListener("change", applyFilters);
+
+      // ==================== HELPER FUNCTIONS ====================
+      function openSearch() {
+        document.getElementById("searchInput").focus();
+      }
+
+      // ==================== INITIALIZE PAGE ====================
+      window.addEventListener("DOMContentLoaded", () => {
+        renderFeaturedCourses();
+        renderCourses();
+        renderRecommended();
+        console.log("Course Library loaded successfully!");
+      });
+
+      // ==================== SMOOTH SCROLL ====================
+      document.documentElement.style.scrollBehavior = "smooth";
+    </script>
+  </body>
+</html>

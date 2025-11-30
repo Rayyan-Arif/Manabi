@@ -1,0 +1,1430 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manabi â€” Learning Studio</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: #f7f9ff;
+        color: #1a202c;
+        overflow: hidden;
+      }
+
+      /* ===== NAVIGATION BAR ===== */
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 28px;
+        background: white;
+        border-bottom: 1px solid #e6e9ef;
+        height: 70px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      }
+
+      .navbar-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1d4769;
+        letter-spacing: -0.5px;
+      }
+
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, #1d4769, #2d5a8c);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+      }
+
+      .navbar-center {
+        flex: 1;
+        text-align: center;
+      }
+
+      .page-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a202c;
+      }
+
+      .navbar-right {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #f0f2f7;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.3s ease;
+        color: #1d4769;
+      }
+
+      .icon-btn:hover {
+        background: #e6e9ef;
+        transform: scale(1.05);
+      }
+
+      /* ===== MAIN CONTAINER ===== */
+      .main-container {
+        display: grid;
+        grid-template-columns: 30% 45% 25%;
+        gap: 24px;
+        padding: 24px;
+        height: calc(100vh - 70px);
+        overflow: hidden;
+      }
+
+      .panel {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* ===== LEFT PANEL: CHAT ===== */
+      .left-panel {
+        position: relative;
+      }
+
+      .panel-header {
+        padding: 20px 20px 16px;
+        border-bottom: 1px solid #f0f2f7;
+      }
+
+      .panel-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 4px;
+      }
+
+      .panel-subtitle {
+        font-size: 12px;
+        color: #718096;
+        line-height: 1.4;
+      }
+
+      .chat-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .chat-container::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .chat-container::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .chat-container::-webkit-scrollbar-thumb {
+        background: #dce3ff;
+        border-radius: 3px;
+      }
+
+      .message {
+        display: flex;
+        gap: 10px;
+        animation: slideIn 0.3s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .ai-message {
+        justify-content: flex-start;
+      }
+
+      .user-message {
+        justify-content: flex-end;
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1d4769, #2d5a8c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      .user-avatar {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+      }
+
+      .message-bubble {
+        max-width: 85%;
+        padding: 12px 16px;
+        border-radius: 14px;
+        font-size: 14px;
+        line-height: 1.5;
+        word-wrap: break-word;
+      }
+
+      .ai-bubble {
+        background: #f0f2f7;
+        color: #1a202c;
+        border: 1px solid #dce3ff;
+      }
+
+      .user-bubble {
+        background: #1d4769;
+        color: white;
+      }
+
+      .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+        padding-left: 42px;
+      }
+
+      .action-btn {
+        font-size: 11px;
+        padding: 6px 10px;
+        background: #f0f2f7;
+        border: 1px solid #dce3ff;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: #1d4769;
+        font-weight: 500;
+      }
+
+      .action-btn:hover {
+        background: #dce3ff;
+        transform: translateY(-1px);
+      }
+
+      .suggested-prompts {
+        padding: 16px;
+        border-top: 1px solid #f0f2f7;
+        overflow-x: auto;
+        display: flex;
+        gap: 10px;
+        scroll-behavior: smooth;
+      }
+
+      .suggested-prompts::-webkit-scrollbar {
+        height: 4px;
+      }
+
+      .suggested-prompts::-webkit-scrollbar-thumb {
+        background: #dce3ff;
+        border-radius: 2px;
+      }
+
+      .prompt-chip {
+        padding: 8px 14px;
+        background: #f0f2f7;
+        border: 1px solid #dce3ff;
+        border-radius: 20px;
+        font-size: 12px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+        color: #1d4769;
+        font-weight: 500;
+        flex-shrink: 0;
+      }
+
+      .prompt-chip:hover {
+        background: #dce3ff;
+        transform: translateY(-2px);
+      }
+
+      .input-area {
+        display: flex;
+        gap: 10px;
+        padding: 16px;
+        border-top: 1px solid #f0f2f7;
+        align-items: center;
+      }
+
+      .text-input {
+        flex: 1;
+        border: 1px solid #dce3ff;
+        border-radius: 24px;
+        padding: 12px 16px;
+        font-size: 14px;
+        font-family: "Inter", sans-serif;
+        transition: all 0.2s ease;
+        outline: none;
+      }
+
+      .text-input:focus {
+        border-color: #1d4769;
+        box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
+      }
+
+      .mic-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #1d4769;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+      }
+
+      .mic-btn:hover {
+        background: #3d54d4;
+        transform: scale(1.05);
+      }
+
+      .mic-btn.active {
+        animation: pulse 1s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(76, 110, 245, 0.7);
+        }
+        50% {
+          box-shadow: 0 0 0 8px rgba(76, 110, 245, 0.2);
+        }
+      }
+
+      .send-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #1d4769;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+      }
+
+      .send-btn:hover {
+        background: #3d54d4;
+        transform: scale(1.05);
+      }
+
+      .send-btn:active {
+        transform: scale(0.95);
+      }
+
+      /* ===== CENTER PANEL: VISUAL LEARNING ===== */
+      .center-panel {
+        position: relative;
+      }
+
+      .mode-selector {
+        display: flex;
+        gap: 8px;
+        padding: 16px 20px;
+        border-bottom: 1px solid #f0f2f7;
+        overflow-x: auto;
+      }
+
+      .mode-selector::-webkit-scrollbar {
+        height: 4px;
+      }
+
+      .mode-chip {
+        padding: 8px 14px;
+        background: #f0f2f7;
+        border: 1px solid #dce3ff;
+        border-radius: 20px;
+        font-size: 12px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+        color: #718096;
+        font-weight: 500;
+        flex-shrink: 0;
+      }
+
+      .mode-chip.active {
+        background: #1d4769;
+        color: white;
+        border-color: #1d4769;
+      }
+
+      .mode-chip:hover {
+        transform: translateY(-2px);
+      }
+
+      .visual-content {
+        flex: 1;
+        padding: 24px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .visual-content::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .visual-content::-webkit-scrollbar-thumb {
+        background: #dce3ff;
+        border-radius: 3px;
+      }
+
+      .content-block {
+        opacity: 0;
+        animation: fadeIn 0.4s ease-out forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .diagram {
+        background: #f0f2f7;
+        border: 2px solid #dce3ff;
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        min-height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        color: #1d4769;
+      }
+
+      .flowchart {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .flowchart-step {
+        background: #f0f2f7;
+        padding: 16px;
+        border-radius: 8px;
+        border-left: 4px solid #1d4769;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .flowchart-step strong {
+        color: #1d4769;
+      }
+
+      .arrow {
+        text-align: center;
+        color: #2d5a8c;
+        font-size: 20px;
+      }
+
+      .analogy-box {
+        background: linear-gradient(135deg, #f0f2f7, #f7f9ff);
+        border: 1px solid #dce3ff;
+        border-radius: 10px;
+        padding: 16px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .analogy-label {
+        font-weight: 700;
+        color: #1d4769;
+        margin-bottom: 8px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .audio-player {
+        background: #f0f2f7;
+        border: 1px solid #dce3ff;
+        border-radius: 10px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .play-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #1d4769;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 16px;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+      }
+
+      .play-btn:hover {
+        background: #3d54d4;
+        transform: scale(1.05);
+      }
+
+      .progress-bar {
+        flex: 1;
+        height: 4px;
+        background: #dce3ff;
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: #1d4769;
+        width: 0%;
+        animation: progressMove 8s ease-out;
+      }
+
+      @keyframes progressMove {
+        from {
+          width: 0%;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      .time-text {
+        font-size: 12px;
+        color: #718096;
+        min-width: 30px;
+        text-align: right;
+      }
+
+      .transcript-box {
+        background: #f0f2f7;
+        border: 1px solid #dce3ff;
+        border-radius: 8px;
+        padding: 12px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: #1d4769;
+        font-style: italic;
+      }
+
+      .minimal-text {
+        font-size: 14px;
+        line-height: 1.8;
+        color: #2d3748;
+      }
+
+      .visual-controls {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 12px;
+      }
+
+      .control-btn {
+        padding: 10px 16px;
+        background: #1d4769;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .control-btn:hover {
+        background: #3d54d4;
+        transform: translateY(-2px);
+      }
+
+      .control-btn.secondary {
+        background: #f0f2f7;
+        color: #1d4769;
+        border: 1px solid #dce3ff;
+      }
+
+      .control-btn.secondary:hover {
+        background: #dce3ff;
+      }
+
+      /* ===== RIGHT PANEL: HISTORY ===== */
+      .right-panel {
+        position: relative;
+      }
+
+      .filter-buttons {
+        display: flex;
+        gap: 6px;
+        padding: 14px 16px;
+        border-bottom: 1px solid #f0f2f7;
+        flex-wrap: wrap;
+        overflow-y: auto;
+        max-height: 60px;
+      }
+
+      .filter-buttons::-webkit-scrollbar {
+        height: 4px;
+      }
+
+      .filter-btn {
+        padding: 6px 12px;
+        background: #f0f2f7;
+        border: 1px solid #dce3ff;
+        border-radius: 16px;
+        font-size: 11px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s ease;
+        color: #718096;
+        font-weight: 500;
+        flex-shrink: 0;
+      }
+
+      .filter-btn.active {
+        background: #1d4769;
+        color: white;
+        border-color: #1d4769;
+      }
+
+      .filter-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .history-timeline {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .history-timeline::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .history-timeline::-webkit-scrollbar-thumb {
+        background: #dce3ff;
+        border-radius: 3px;
+      }
+
+      .history-item {
+        padding: 12px;
+        background: #f0f2f7;
+        border-radius: 8px;
+        border-left: 3px solid #2d5a8c;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        animation: slideInRight 0.3s ease-out;
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .history-item:hover {
+        background: #e6e9ef;
+        transform: translateX(4px);
+        box-shadow: 0 2px 6px rgba(76, 110, 245, 0.1);
+      }
+
+      .history-icon {
+        font-size: 14px;
+        margin-right: 8px;
+      }
+
+      .history-text {
+        font-size: 12px;
+        color: #2d3748;
+        line-height: 1.4;
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+
+      .history-time {
+        font-size: 11px;
+        color: #a0aec0;
+      }
+
+      .history-score {
+        display: inline-block;
+        background: #1d4769;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 6px;
+      }
+
+      .view-again-btn {
+        display: inline-block;
+        background: #1d4769;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 10px;
+        cursor: pointer;
+        margin-top: 6px;
+        border: none;
+        transition: all 0.2s ease;
+        font-weight: 600;
+      }
+
+      .view-again-btn:hover {
+        background: #3d54d4;
+        transform: scale(1.05);
+      }
+
+      .clear-history {
+        padding: 14px 16px;
+        border-top: 1px solid #f0f2f7;
+        text-align: center;
+      }
+
+      .clear-btn {
+        background: none;
+        border: none;
+        color: #e53e3e;
+        font-size: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+
+      .clear-btn:hover {
+        text-decoration: underline;
+      }
+
+      /* ===== FOOTER ===== */
+      .footer {
+        padding: 16px 28px;
+        background: white;
+        border-top: 1px solid #e6e9ef;
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        font-size: 12px;
+        color: #a0aec0;
+        height: auto;
+      }
+
+      .footer a {
+        color: #a0aec0;
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .footer a:hover {
+        color: #1d4769;
+      }
+
+      .footer-divider {
+        color: #e6e9ef;
+      }
+
+      .version-badge {
+        font-weight: 600;
+        color: #718096;
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 1400px) {
+        .main-container {
+          grid-template-columns: 35% 40% 25%;
+        }
+      }
+
+      @media (max-width: 1200px) {
+        .main-container {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+
+        .left-panel,
+        .center-panel,
+        .right-panel {
+          display: none;
+        }
+
+        .left-panel.active,
+        .center-panel.active,
+        .right-panel.active {
+          display: flex;
+        }
+
+        .panel-tab-selector {
+          display: flex;
+          gap: 8px;
+          padding: 16px 24px;
+          border-bottom: 1px solid #e6e9ef;
+        }
+
+        .panel-tab {
+          padding: 8px 16px;
+          background: #f0f2f7;
+          border: 1px solid #dce3ff;
+          border-radius: 20px;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: 600;
+          color: #718096;
+          transition: all 0.2s ease;
+        }
+
+        .panel-tab.active {
+          background: #1d4769;
+          color: white;
+          border-color: #1d4769;
+        }
+      }
+
+      /* ===== EMPTY STATE ===== */
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-align: center;
+        color: #a0aec0;
+      }
+
+      .empty-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+        opacity: 0.5;
+      }
+
+      .empty-text {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+      <div class="navbar-left">
+        <div class="logo-icon">M</div>
+        <div class="logo">Manabi</div>
+      </div>
+      <div class="navbar-center">
+        <div class="page-title">Learning Studio</div>
+      </div>
+      <div class="navbar-right">
+        <button class="icon-btn" title="Settings">âš™ï¸</button>
+        <button class="icon-btn" title="Profile">ðŸ‘¤</button>
+      </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+      <!-- LEFT PANEL: AI Chat Tutor -->
+      <div class="panel left-panel active">
+        <div class="panel-header">
+          <div class="panel-title">ðŸ’¬ Chat with Manabi AI</div>
+          <div class="panel-subtitle">
+            Ask anything. I'll adapt the explanation for your learning style.
+          </div>
+        </div>
+
+        <div class="chat-container" id="chatContainer">
+          <div class="message ai-message">
+            <div class="avatar">âœ¨</div>
+            <div>
+              <div class="message-bubble ai-bubble">
+                Hi! I'm Manabi, your AI tutor. What would you like to learn
+                today? I can explain concepts visually, with analogies,
+                animations, or in any style you prefer.
+              </div>
+              <div class="action-buttons">
+                <button class="action-btn">Explain Simpler</button>
+                <button class="action-btn">Give Analogy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="suggested-prompts" id="suggestedPrompts">
+          <div
+            class="prompt-chip"
+            onclick="addPrompt('Explain photosynthesis visually')"
+          >
+            ðŸŽ¨ Explain visually
+          </div>
+          <div
+            class="prompt-chip"
+            onclick="addPrompt('Give me a real-life example')"
+          >
+            ðŸŒ Real-life example
+          </div>
+          <div class="prompt-chip" onclick="addPrompt('Repeat this slower')">
+            ðŸ¢ Repeat slower
+          </div>
+          <div
+            class="prompt-chip"
+            onclick="addPrompt('Speak this explanation')"
+          >
+            ðŸ”Š Speak explanation
+          </div>
+        </div>
+
+        <div class="input-area">
+          <input
+            type="text"
+            class="text-input"
+            id="chatInput"
+            placeholder="Type your questionâ€¦"
+            onkeypress="handleEnter(event)"
+          />
+          <button
+            class="mic-btn"
+            id="micBtn"
+            onclick="toggleMic()"
+            title="Voice Input"
+          >
+            ðŸŽ¤
+          </button>
+          <button class="send-btn" onclick="sendMessage()" title="Send">
+            âž¤
+          </button>
+        </div>
+      </div>
+
+      <!-- CENTER PANEL: Visual Learning -->
+      <div class="panel center-panel active">
+        <div class="panel-header">
+          <div class="panel-title">ðŸŽ¨ Visual Learning View</div>
+        </div>
+
+        <div class="mode-selector" id="modeSelector">
+          <div class="mode-chip active" onclick="switchMode('visual')">
+            Visual
+          </div>
+          <div class="mode-chip" onclick="switchMode('analogical')">
+            Analogical
+          </div>
+          <div class="mode-chip" onclick="switchMode('audio')">Audio</div>
+          <div class="mode-chip" onclick="switchMode('dynamic')">Dynamic</div>
+          <div class="mode-chip" onclick="switchMode('minimal')">Minimal</div>
+        </div>
+
+        <div class="visual-content" id="visualContent">
+          <div class="empty-state">
+            <div class="empty-icon">ðŸ“š</div>
+            <div class="empty-text">
+              Ask a question to see visual learning content here
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL: History Timeline -->
+      <div class="panel right-panel active">
+        <div class="panel-header">
+          <div class="panel-title">ðŸ“œ History</div>
+        </div>
+
+        <div class="filter-buttons" id="filterButtons">
+          <button class="filter-btn active" onclick="filterHistory('all')">
+            All
+          </button>
+          <button class="filter-btn" onclick="filterHistory('questions')">
+            Questions
+          </button>
+          <button class="filter-btn" onclick="filterHistory('visuals')">
+            Visuals
+          </button>
+          <button class="filter-btn" onclick="filterHistory('audio')">
+            Audio
+          </button>
+          <button class="filter-btn" onclick="filterHistory('examples')">
+            Examples
+          </button>
+          <button class="filter-btn" onclick="filterHistory('quizzes')">
+            Quizzes
+          </button>
+        </div>
+
+        <div class="history-timeline" id="historyTimeline">
+          <div class="empty-state">
+            <div class="empty-icon">â±ï¸</div>
+            <div class="empty-text">Your learning history will appear here</div>
+          </div>
+        </div>
+
+        <div class="clear-history">
+          <button class="clear-btn" onclick="clearAllHistory()">
+            Clear History
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <a href="#">Help</a>
+      <span class="footer-divider">â€¢</span>
+      <a href="#">Privacy</a>
+      <span class="footer-divider">â€¢</span>
+      <a href="#">Terms</a>
+      <span class="footer-divider">â€¢</span>
+      <span class="version-badge">Manabi v1.0</span>
+    </div>
+
+    <script>
+      // State Management
+      const state = {
+        currentMode: "visual",
+        messages: [],
+        history: [],
+        currentFilter: "all",
+        isMicActive: false,
+      };
+
+      // Predefined responses based on learning modes
+      const responseLibrary = {
+        visual: {
+          title: "Visual Explanation",
+          content: `
+                    <div class="content-block">
+                        <div class="diagram">ðŸ“Š Flowchart Diagram</div>
+                        <div class="flowchart">
+                            <div class="flowchart-step">
+                                <strong>Step 1:</strong> Understand the main concept
+                            </div>
+                            <div class="arrow">â†“</div>
+                            <div class="flowchart-step">
+                                <strong>Step 2:</strong> Break down into smaller parts
+                            </div>
+                            <div class="arrow">â†“</div>
+                            <div class="flowchart-step">
+                                <strong>Step 3:</strong> Connect with real examples
+                            </div>
+                            <div class="arrow">â†“</div>
+                            <div class="flowchart-step">
+                                <strong>Step 4:</strong> Master through practice
+                            </div>
+                        </div>
+                    </div>
+                `,
+        },
+        analogical: {
+          title: "Real-Life Analogy",
+          content: `
+                    <div class="content-block">
+                        <div class="analogy-box">
+                            <div class="analogy-label">ðŸŒ Analogy</div>
+                            <p>Think of this concept like a tree:</p>
+                            <ul style="margin: 8px 0 0 16px; line-height: 1.8;">
+                                <li><strong>Roots</strong> = Foundation concepts</li>
+                                <li><strong>Trunk</strong> = Core principles</li>
+                                <li><strong>Branches</strong> = Applications</li>
+                                <li><strong>Leaves</strong> = Details and specifics</li>
+                            </ul>
+                        </div>
+                    </div>
+                `,
+        },
+        audio: {
+          title: "Audio Explanation",
+          content: `
+                    <div class="content-block">
+                        <div class="audio-player">
+                            <button class="play-btn">â–¶ï¸</button>
+                            <div class="progress-bar"><div class="progress-fill"></div></div>
+                            <div class="time-text">2:45</div>
+                        </div>
+                        <div style="margin-top: 12px;">
+                            <div class="transcript-box">
+                                "Let me explain this concept step by step. First, we need to understand the foundation... This is important because..."
+                            </div>
+                        </div>
+                    </div>
+                `,
+        },
+        dynamic: {
+          title: "Step-by-Step Animation",
+          content: `
+                    <div class="content-block">
+                        <div class="diagram" style="background: linear-gradient(135deg, #1d4769, #2d5a8c); color: white; animation: fadeInScale 0.8s ease-out;">ðŸŽ¬ Step 1 of 4</div>
+                        <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 12px;">Playing animation... â–¶ï¸</div>
+                    </div>
+                `,
+        },
+        minimal: {
+          title: "Concise Explanation",
+          content: `
+                    <div class="content-block">
+                        <div class="minimal-text">
+                            <p><strong>Definition:</strong> A concise explanation of the concept.</p>
+                            <p style="margin-top: 12px;"><strong>Key Points:</strong></p>
+                            <ul style="margin: 8px 0 0 16px; line-height: 1.8;">
+                                <li>Point one</li>
+                                <li>Point two</li>
+                                <li>Point three</li>
+                            </ul>
+                        </div>
+                    </div>
+                `,
+        },
+      };
+
+      // Add message to chat
+      function sendMessage() {
+        const input = document.getElementById("chatInput");
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        // Add user message
+        addMessageToChat(message, "user");
+        addToHistory(message, "questions");
+
+        // Simulate AI response
+        setTimeout(() => {
+          const response =
+            "I'll explain this with a visual breakdown. Here's the concept step by step...";
+          addMessageToChat(response, "ai");
+          updateVisualContent();
+        }, 800);
+
+        input.value = "";
+      }
+
+      // Add message from prompt chip
+      function addPrompt(text) {
+        document.getElementById("chatInput").value = text;
+        sendMessage();
+      }
+
+      // Add message to chat display
+      function addMessageToChat(message, sender) {
+        const chatContainer = document.getElementById("chatContainer");
+
+        if (chatContainer.querySelector(".empty-state")) {
+          chatContainer.innerHTML = "";
+        }
+
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${
+          sender === "user" ? "user-message" : "ai-message"
+        }`;
+
+        if (sender === "user") {
+          messageDiv.innerHTML = `
+                    <div class="message-bubble user-bubble">${escapeHtml(
+                      message
+                    )}</div>
+                    <div class="avatar user-avatar">You</div>
+                `;
+        } else {
+          messageDiv.innerHTML = `
+                    <div class="avatar">âœ¨</div>
+                    <div>
+                        <div class="message-bubble ai-bubble">${escapeHtml(
+                          message
+                        )}</div>
+                        <div class="action-buttons">
+                            <button class="action-btn">Explain Simpler</button>
+                            <button class="action-btn">Give Analogy</button>
+                            <button class="action-btn">Show Animation</button>
+                            <button class="action-btn">Explain with Diagram</button>
+                        </div>
+                    </div>
+                `;
+        }
+
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      // Handle Enter key
+      function handleEnter(event) {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      }
+
+      // Switch learning mode
+      function switchMode(mode) {
+        state.currentMode = mode;
+
+        // Update chip state
+        document.querySelectorAll(".mode-chip").forEach((chip) => {
+          chip.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        updateVisualContent();
+      }
+
+      // Update visual content based on current mode
+      function updateVisualContent() {
+        const visualContent = document.getElementById("visualContent");
+        const modeData = responseLibrary[state.currentMode];
+
+        visualContent.innerHTML = `
+                <div style="padding: 8px 0;">
+                    <h3 style="font-size: 14px; font-weight: 600; color: #1A202C; margin-bottom: 12px;">${modeData.title}</h3>
+                </div>
+                ${modeData.content}
+                <div class="visual-controls">
+                    <button class="control-btn">ðŸ”„ Re-generate Explanation</button>
+                    <button class="control-btn secondary">ðŸ“Œ Add to Notes</button>
+                    <button class="control-btn secondary">â›¶ Fullscreen</button>
+                </div>
+            `;
+
+        addToHistory(`${modeData.title} - ${state.currentMode}`, "visuals");
+      }
+
+      // Add item to history
+      function addToHistory(text, type) {
+        const historyItem = {
+          text: text.length > 50 ? text.substring(0, 50) + "..." : text,
+          type: type,
+          time: getTimeAgo(),
+          fullText: text,
+          timestamp: Date.now(),
+        };
+
+        state.history.unshift(historyItem);
+        updateHistoryDisplay();
+      }
+
+      // Update history display
+      function updateHistoryDisplay() {
+        const timeline = document.getElementById("historyTimeline");
+        const filter = state.currentFilter;
+
+        let filteredHistory = state.history;
+        if (filter !== "all") {
+          filteredHistory = state.history.filter(
+            (item) => item.type === filter
+          );
+        }
+
+        if (filteredHistory.length === 0) {
+          timeline.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">â±ï¸</div>
+                        <div class="empty-text">No items in this filter</div>
+                    </div>
+                `;
+          return;
+        }
+
+        timeline.innerHTML = filteredHistory
+          .map(
+            (item, index) => `
+                <div class="history-item" onclick="restoreFromHistory(${index})">
+                    <div style="display: flex; gap: 8px; align-items: flex-start;">
+                        <span class="history-icon">${getIconForType(
+                          item.type
+                        )}</span>
+                        <div style="flex: 1;">
+                            <div class="history-text">${escapeHtml(
+                              item.text
+                            )}</div>
+                            <div class="history-time">${item.time}</div>
+                            ${
+                              item.type === "quizzes"
+                                ? `<div class="history-score">7/10</div>`
+                                : ""
+                            }
+                            ${
+                              item.type === "visuals"
+                                ? `<button class="view-again-btn" onclick="event.stopPropagation(); viewAgain()">View Again</button>`
+                                : ""
+                            }
+                        </div>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      // Get icon for history type
+      function getIconForType(type) {
+        const icons = {
+          questions: "ðŸ’¬",
+          visuals: "ðŸŽ¨",
+          audio: "ðŸ”Š",
+          examples: "ðŸ“–",
+          quizzes: "ðŸ“",
+        };
+        return icons[type] || "ðŸ“Œ";
+      }
+
+      // Get relative time string
+      function getTimeAgo() {
+        const times = [
+          "Just now",
+          "1 min ago",
+          "5 mins ago",
+          "15 mins ago",
+          "1 hour ago",
+          "2 hours ago",
+        ];
+        return times[Math.floor(Math.random() * times.length)];
+      }
+
+      // Filter history
+      function filterHistory(filter) {
+        state.currentFilter = filter;
+
+        // Update filter buttons
+        document.querySelectorAll(".filter-btn").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+        event.target.classList.add("active");
+
+        updateHistoryDisplay();
+      }
+
+      // Clear all history
+      function clearAllHistory() {
+        if (confirm("Are you sure you want to clear all history?")) {
+          state.history = [];
+          updateHistoryDisplay();
+        }
+      }
+
+      // Restore from history
+      function restoreFromHistory(index) {
+        const item = state.history[index];
+        document.getElementById("chatInput").value = item.fullText;
+      }
+
+      // View again
+      function viewAgain() {
+        updateVisualContent();
+      }
+
+      // Toggle microphone
+      function toggleMic() {
+        const micBtn = document.getElementById("micBtn");
+        state.isMicActive = !state.isMicActive;
+
+        if (state.isMicActive) {
+          micBtn.classList.add("active");
+          micBtn.textContent = "ðŸŽ™ï¸";
+          micBtn.style.background = "#E53E3E";
+        } else {
+          micBtn.classList.remove("active");
+          micBtn.textContent = "ðŸŽ¤";
+          micBtn.style.background = "";
+          addMessageToChat(
+            'Voice input received: "Can you explain photosynthesis?"',
+            "user"
+          );
+        }
+      }
+
+      // Utility function to escape HTML
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // Initial history items
+      function initializeSampleHistory() {
+        addToHistory("How does photosynthesis work?", "questions");
+        addToHistory("Visual diagram of the carbon cycle", "visuals");
+        addToHistory("Real-world application example", "examples");
+        addToHistory("Quiz: Photosynthesis Basics", "quizzes");
+      }
+
+      // Initialize on load
+      window.addEventListener("DOMContentLoaded", () => {
+        initializeSampleHistory();
+      });
+
+      // Add fade-in-scale animation for dynamic mode
+      const style = document.createElement("style");
+      style.textContent = `
+            @keyframes fadeInScale {
+                from { opacity: 0; transform: scale(0.8); }
+                to { opacity: 1; transform: scale(1); }
+            }
+        `;
+      document.head.appendChild(style);
+    </script>
+  </body>
+</html>
+

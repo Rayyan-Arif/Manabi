@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manabi — Complete Learning Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --primary: #1d4769;
+        --accent: #eaf5fb;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --purple: #8b5cf6;
+        --pink: #ec4899;
+        --text-dark: #1f2937;
+        --text-light: #6b7280;
+        --bg-light: #f9fafb;
+        --bg-white: #ffffff;
+        --border: #e5e7eb;
+      }
+
+      body {
+        font-family: "Inter", "Poppins", sans-serif;
+        background: linear-gradient(135deg, var(--bg-light) 0%, #f0f4ff 100%);
+        color: var(--text-dark);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ==================== LAYOUT ==================== */
+      .container-main {
+        display: flex;
+        min-height: 100vh;
+        gap: 0;
+      }
+
+      /* ==================== SIDEBAR ==================== */
+      .sidebar {
+        width: 280px;
+        background: var(--bg-white);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        padding: 24px 0;
+        z-index: 100;
+        transition: transform 0.3s ease;
+      }
+
+      .sidebar-header {
+        padding: 0 20px 24px 20px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 24px;
+      }
+
+      .sidebar-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        margin-bottom: 16px;
+      }
+
+      .sidebar-logo-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary), #2d5a8c);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 20px;
+      }
+
+      .sidebar-logo-text {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: -0.5px;
+      }
+
+      .sidebar-user {
+        font-size: 13px;
+        color: var(--text-light);
+        margin-top: 8px;
+      }
+
+      .sidebar-nav {
+        list-style: none;
+      }
+
+      .sidebar-nav-item {
+        margin: 0;
+      }
+
+      .sidebar-nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        color: var(--text-light);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        cursor: pointer;
+        border-left: 3px solid transparent;
+        font-size: 15px;
+      }
+
+      .sidebar-nav-link:hover {
+        background: var(--accent);
+        color: var(--primary);
+        border-left-color: var(--primary);
+      }
+
+      .sidebar-nav-link.active {
+        background: var(--accent);
+        color: var(--primary);
+        border-left-color: var(--primary);
+        font-weight: 600;
+      }
+
+      .sidebar-nav-icon {
+        font-size: 20px;
+        min-width: 24px;
+        text-align: center;
+      }
+
+      /* ==================== MAIN CONTENT ==================== */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ==================== TOP BAR ==================== */
+      .topbar {
+        background: var(--bg-white);
+        padding: 16px 32px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      .topbar-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .btn-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--accent);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        transition: all 0.3s ease;
+      }
+
+      .btn-icon:hover {
+        transform: scale(1.1);
+        background: linear-gradient(135deg, var(--primary), #2d5a8c);
+        color: white;
+      }
+
+      .profile-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), #2d5a8c);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      /* ==================== CONTENT AREA ==================== */
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 32px;
+      }
+
+      .section {
+        display: none;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .section.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ==================== CARDS & SECTIONS ==================== */
+      .card {
+        background: var(--bg-white);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        margin-bottom: 24px;
+        transition: all 0.3s ease;
+      }
+
+      .card:hover {
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+        transform: translateY(-4px);
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      /* ==================== PROFILE SECTION ==================== */
+      .profile-header {
+        background: linear-gradient(135deg, var(--primary) 0%, #2d5a8c 100%);
+        border-radius: 16px;
+        padding: 32px;
+        color: white;
+        margin-bottom: 24px;
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+      }
+
+      .profile-avatar-large {
+        width: 100px;
+        height: 100px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        flex-shrink: 0;
+      }
+
+      .profile-info h2 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .profile-info p {
+        font-size: 14px;
+        opacity: 0.9;
+        margin-bottom: 16px;
+      }
+
+      .profile-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .btn-primary {
+        background: white;
+        color: var(--primary);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      /* ==================== STATS GRID ==================== */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-bottom: 24px;
+      }
+
+      .stat-card {
+        background: var(--bg-white);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+      }
+
+      .stat-card.primary {
+        border-color: var(--primary);
+      }
+
+      .stat-card.success {
+        border-color: var(--success);
+      }
+
+      .stat-card.warning {
+        border-color: var(--warning);
+      }
+
+      .stat-card.info {
+        border-color: var(--info);
+      }
+
+      .stat-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+      }
+
+      .stat-label {
+        font-size: 13px;
+        color: var(--text-light);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+
+      .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+      }
+
+      .stat-desc {
+        font-size: 12px;
+        color: var(--text-light);
+      }
+
+      /* ==================== PROGRESS BARS ==================== */
+      .progress-item {
+        margin-bottom: 20px;
+      }
+
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .progress-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .progress-percent {
+        font-size: 13px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 20px;
+        background: var(--accent);
+      }
+
+      .progress-bar-container {
+        width: 100%;
+        height: 8px;
+        background: #f0f0f0;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+      }
+
+      .progress-bar.blue {
+        background: linear-gradient(90deg, #3b82f6, #0ea5e9);
+      }
+
+      .progress-bar.green {
+        background: linear-gradient(90deg, #10b981, #34d399);
+      }
+
+      .progress-bar.purple {
+        background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+      }
+
+      .progress-bar.pink {
+        background: linear-gradient(90deg, #ec4899, #f472b6);
+      }
+
+      .progress-bar.amber {
+        background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      }
+
+      /* ==================== BADGES ==================== */
+      .badges-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+      }
+
+      .badge-card {
+        background: var(--bg-white);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        border: 2px solid var(--border);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .badge-card:hover {
+        transform: translateY(-8px) scale(1.05);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        border-color: var(--primary);
+      }
+
+      .badge-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .badge-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 6px;
+      }
+
+      .badge-desc {
+        font-size: 12px;
+        color: var(--text-light);
+        line-height: 1.4;
+      }
+
+      /* ==================== TAGS ==================== */
+      .tags-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .tag {
+        background: var(--accent);
+        color: var(--primary);
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      /* ==================== TIMELINE ==================== */
+      .timeline {
+        position: relative;
+        padding-left: 40px;
+      }
+
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 10px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, var(--primary), transparent);
+      }
+
+      .timeline-item {
+        margin-bottom: 24px;
+        position: relative;
+        animation: slideIn 0.6s ease forwards;
+        opacity: 0;
+      }
+
+      .timeline-item:nth-child(1) {
+        animation-delay: 0.1s;
+      }
+      .timeline-item:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .timeline-item:nth-child(3) {
+        animation-delay: 0.3s;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -36px;
+        top: 6px;
+        width: 12px;
+        height: 12px;
+        background: var(--primary);
+        border-radius: 50%;
+        box-shadow: 0 0 0 4px var(--accent);
+      }
+
+      .timeline-title {
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 4px;
+      }
+
+      .timeline-time {
+        font-size: 13px;
+        color: var(--text-light);
+      }
+
+      /* ==================== HEATMAP ==================== */
+      .heatmap-container {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+        background: var(--bg-light);
+        padding: 16px;
+        border-radius: 12px;
+      }
+
+      .heatmap-cell {
+        width: 16px;
+        height: 16px;
+        border-radius: 3px;
+        background: #e5e7eb;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .heatmap-cell:hover {
+        transform: scale(1.3);
+      }
+
+      .heatmap-cell.level-1 {
+        background: #d1e7f0;
+      }
+      .heatmap-cell.level-2 {
+        background: #87ceeb;
+      }
+      .heatmap-cell.level-3 {
+        background: #1d4769;
+        opacity: 0.6;
+      }
+      .heatmap-cell.level-4 {
+        background: #1d4769;
+        opacity: 0.9;
+      }
+      .heatmap-cell.level-5 {
+        background: #1d4769;
+      }
+
+      /* ==================== RECOMMENDED SECTION ==================== */
+      .recommended-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+      }
+
+      .recommended-card {
+        background: var(--bg-white);
+        border-radius: 16px;
+        padding: 20px;
+        border-left: 4px solid var(--primary);
+        transition: all 0.3s ease;
+      }
+
+      .recommended-card.success {
+        border-left-color: var(--success);
+      }
+
+      .recommended-card.warning {
+        border-left-color: var(--warning);
+      }
+
+      .recommended-card.info {
+        border-left-color: var(--info);
+      }
+
+      .recommended-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+      }
+
+      .rec-icon {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+
+      .rec-title {
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 6px;
+      }
+
+      .rec-desc {
+        font-size: 13px;
+        color: var(--text-light);
+        line-height: 1.5;
+      }
+
+      /* ==================== CIRCULAR PROGRESS ==================== */
+      .circular-progress {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin: 0 auto;
+      }
+
+      .circular-progress svg {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .progress-text {
+        text-align: center;
+        z-index: 2;
+        position: relative;
+      }
+
+      .progress-text-large {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--primary);
+      }
+
+      .progress-text-small {
+        font-size: 12px;
+        color: var(--text-light);
+        margin-top: 4px;
+      }
+
+      /* ==================== FOOTER ==================== */
+      .footer {
+        background: var(--bg-white);
+        padding: 20px 32px;
+        text-align: center;
+        font-size: 13px;
+        color: var(--text-light);
+        border-top: 1px solid var(--border);
+        margin-top: 32px;
+      }
+
+      /* ==================== RESPONSIVE ==================== */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 240px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .profile-header {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container-main {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+          padding: 16px 0;
+          max-height: 80px;
+          overflow-x: auto;
+          overflow-y: hidden;
+        }
+
+        .sidebar-header {
+          display: none;
+        }
+
+        .sidebar-nav {
+          display: flex;
+          flex-direction: row;
+          gap: 0;
+        }
+
+        .sidebar-nav-link {
+          white-space: nowrap;
+          border-left: none;
+          border-bottom: 3px solid transparent;
+          padding: 12px 16px;
+        }
+
+        .sidebar-nav-link.active {
+          border-left: none;
+          border-bottom-color: var(--primary);
+        }
+
+        .content {
+          padding: 20px;
+        }
+
+        .badges-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .recommended-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .topbar {
+          padding: 12px 16px;
+        }
+
+        .topbar-title {
+          font-size: 18px;
+        }
+
+        .content {
+          padding: 16px;
+        }
+
+        .card {
+          padding: 16px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .badges-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .profile-avatar-large {
+          width: 80px;
+          height: 80px;
+          font-size: 36px;
+        }
+
+        .profile-info h2 {
+          font-size: 20px;
+        }
+      }
+
+      /* ==================== SCROLLBAR ==================== */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--bg-light);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #2d5a8c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-main">
+      <!-- ==================== SIDEBAR ==================== -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <a href="#" class="sidebar-logo">
+            <div class="sidebar-logo-icon">📚</div>
+            <div>
+              <div class="sidebar-logo-text">Manabi</div>
+              <div class="sidebar-user">v1.0</div>
+            </div>
+          </a>
+        </div>
+
+        <nav class="sidebar-nav">
+          <li class="sidebar-nav-item">
+            <a href="#" class="sidebar-nav-link active" data-section="overview">
+              <span class="sidebar-nav-icon">📊</span>
+              <span>Overview</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="#" class="sidebar-nav-link" data-section="profile">
+              <span class="sidebar-nav-icon">👤</span>
+              <span>Profile</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="#" class="sidebar-nav-link" data-section="achievements">
+              <span class="sidebar-nav-icon">🏆</span>
+              <span>Achievements</span>
+            </a>
+          </li>
+        </nav>
+      </aside>
+
+      <!-- ==================== MAIN CONTENT ==================== -->
+      <div class="main-content">
+        <!-- TOP BAR -->
+        <header class="topbar">
+          <h1 class="topbar-title" id="pageTitle">Dashboard Overview</h1>
+          <div class="topbar-actions">
+            <button class="btn-icon" title="Theme Toggle">🌙</button>
+            <div class="profile-avatar">AR</div>
+          </div>
+        </header>
+
+        <!-- CONTENT -->
+        <div class="content">
+          <!-- ==================== OVERVIEW SECTION ==================== -->
+          <section class="section active" id="section-overview">
+            <div class="stats-grid">
+              <div class="stat-card primary">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-label">Current Streak</div>
+                <div class="stat-value" id="overview-streak">30</div>
+                <div class="stat-desc">Days of consistency</div>
+              </div>
+
+              <div class="stat-card success">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-label">Total Learning Time</div>
+                <div class="stat-value" id="overview-time">1,482</div>
+                <div class="stat-desc">Minutes across all subjects</div>
+              </div>
+
+              <div class="stat-card info">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-label">Learning Style</div>
+                <div
+                  class="stat-value"
+                  style="font-size: 20px; line-height: 1.2"
+                  id="overview-style"
+                >
+                  Visual
+                </div>
+                <div class="stat-desc">Detected by AI</div>
+              </div>
+
+              <div class="stat-card warning">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-label">Experience Points</div>
+                <div class="stat-value" id="overview-xp">1,240</div>
+                <div class="stat-desc">Out of 2,000</div>
+              </div>
+            </div>
+
+            <!-- Weekly Activity Chart -->
+            <div class="card">
+              <div class="card-title">📅 Weekly Learning Activity</div>
+              <div
+                style="
+                  display: flex;
+                  align-items: flex-end;
+                  justify-content: space-around;
+                  height: 180px;
+                  gap: 12px;
+                  padding: 20px 0;
+                  background: var(--bg-light);
+                  border-radius: 12px;
+                "
+              >
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    flex: 1;
+                  "
+                >
+                  <div
+                    style="
+                      width: 100%;
+                      background: linear-gradient(180deg, #3b82f6, #0ea5e9);
+                      height: 0%;
+                      border-radius: 4px 4px 0 0;
+                      transition: height 0.6s ease;
+                    "
+                    class="chart-bar"
+                    data-day="0"
+                  ></div>
+                  <span
+                    style="
+                      font-size: 12px;
+                      margin-top: 8px;
+                      color: var(--text-light);
+                      font-weight: 600;
+                    "
+                    >Mon</span
+                  >
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    flex: 1;
+                  "
+                >
+                  <div
+                    style="
+                      width: 100%;
+                      background: linear-gradient(180deg, #10b981, #34d399);
+                      height: 0%;
+                      border-radius: 4px 4px 0 0;
+                      transition: height 0.6s ease;
+                    "
+                    class="chart-bar"
+                    data-day="1"
+                  ></div>
+                  <span
+                    style="
+                      font-size: 12px;
+                      margin-top: 8px;
+                      color: var(--text-light);
+                      font-weight: 600;
+                    "
+                    >Tue</span
+                  >
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    flex: 1;
+                  "
+                >
+                  <div
+                    style="
+                      width: 100%;
+                      background: linear-gradient(180deg, #8b5cf6, #a78bfa);
+                      height: 0%;
+                      border-radius: 4px 4px 0 0;
+                      transition: height 0.6s ease;
+                    "
+                    class="chart-bar"
+                    data-day="2"
+                  ></div>
+                  <span
+                    style="
+                      font-size: 12px;
+                      margin-top: 8px;
+                      color: var(--text-light);
+                      font-weight: 600;
+                    "
+                    >Wed</span
+                  >
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    flex: 1;
+                  "
+                >
+                  <div
+                    style="
+                      width: 100%;
+                      background: linear-gradient(180deg, #ec4899, #f472b6);
+                      height: 0%;
+                      border-radius: 4px 4px 0 0;
+                      transition: height 0.6s ease;
+                    "
+                    class="chart-bar"
+                    data-day="3"
+                  ></div>
+                  <span
+                    style="
+                      font-size: 12px;
+                      margin-top: 8px;
+                      color: var(--text-light);
+                      font-weight: 600;
+                    "
+                    >Thu</span
+                  >
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    flex: 1;
+                  "
+                >
+                  <div
+                    style="
+                      width: 100%;
+                      background: linear-gradient(180deg, #f59e0b, #fbbf24);
+                      height: 0%;
+                      border-radius: 4px 4px 0 0;
+                      transition: height 0.6s ease;
+                    "
+                    class="chart-bar"
+                    data-day="4"
+                  ></div>
+                  <span
+                    style="
+                      font-size: 12px;
+                      margin-top: 8px;
+                      color: var(--text-light);
+                      font-weight: 600;
+                    "
+                    >Fri</span
+                  >
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    flex: 1;
+                  "
+                >
+                  <div
+                    style="
+                      width: 100%;
+                      background: linear-gradient(180deg, #ef4444, #f87171);
+                      height: 0%;
+                      border-radius: 4px 4px 0 0;
+                      transition: height 0.6s ease;
+                    "
+                    class="chart-bar"
+                    data-day="5"
+                  ></div>
+                  <span
+                    style="
+                      font-size: 12px;
+                      margin-top: 8px;
+                      color: var(--text-light);
+                      font-weight: 600;
+                    "
+                    >Sat</span
+                  >
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    flex: 1;
+                  "
+                >
+                  <div
+                    style="
+                      width: 100%;
+                      background: linear-gradient(180deg, #1d4769, #2d5a8c);
+                      height: 0%;
+                      border-radius: 4px 4px 0 0;
+                      transition: height 0.6s ease;
+                    "
+                    class="chart-bar"
+                    data-day="6"
+                  ></div>
+                  <span
+                    style="
+                      font-size: 12px;
+                      margin-top: 8px;
+                      color: var(--text-light);
+                      font-weight: 600;
+                    "
+                    >Sun</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Heatmap -->
+            <div class="card">
+              <div class="card-title">🔥 30-Day Activity Heatmap</div>
+              <div class="heatmap-container" id="heatmap"></div>
+              <div
+                style="
+                  font-size: 12px;
+                  color: var(--text-light);
+                  margin-top: 12px;
+                "
+              >
+                Less activity &nbsp;→&nbsp; More activity
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================== PROFILE SECTION ==================== -->
+          <section class="section" id="section-profile">
+            <div class="profile-header">
+              <div class="profile-avatar-large">👤</div>
+              <div class="profile-info">
+                <h2>Abdul Rauf</h2>
+                <p>BSc Computer Science — GIKI, Pakistan</p>
+                <p style="font-size: 13px; opacity: 0.85">
+                  Level 5 Learner • Active since 2024
+                </p>
+                <div class="profile-buttons">
+                  <button class="btn-primary">Edit Profile</button>
+                  <button class="btn-secondary">Settings</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Learning Strengths -->
+            <div class="card">
+              <div class="card-title">💪 Your Learning Strengths</div>
+              <div class="tags-list">
+                <span class="tag">✨ Understands visuals quickly</span>
+                <span class="tag">🧩 Strong problem-solving</span>
+                <span class="tag">💡 Good conceptual clarity</span>
+                <span class="tag">⚡ Fast pattern recognition</span>
+              </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="card">
+              <div class="card-title">ℹ️ About Me</div>
+              <p style="color: var(--text-light); line-height: 1.6">
+                I'm a passionate learner who enjoys technology, problem-solving,
+                and helping others. My goal is to use AI to make education
+                better, more inclusive, and more adaptive for students with
+                different learning needs. I'm committed to continuous
+                improvement and love exploring new ideas.
+              </p>
+            </div>
+
+            <!-- Activity Timeline -->
+            <div class="card">
+              <div class="card-title">📅 Learning Timeline</div>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-title">
+                    ✅ Completed "Fractions — Visual Guide"
+                  </div>
+                  <div class="timeline-time">2 days ago</div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-title">
+                    🏅 Unlocked Level 5 Learner Badge
+                  </div>
+                  <div class="timeline-time">Last week</div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-title">
+                    ▶️ Started "Photosynthesis — Animation Lesson"
+                  </div>
+                  <div class="timeline-time">2 weeks ago</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================== ACHIEVEMENTS SECTION ==================== -->
+          <section class="section" id="section-achievements">
+            <h2 class="section-title">🏆 Your Achievements</h2>
+
+            <div class="badges-grid">
+              <div class="badge-card">
+                <div class="badge-icon">🔥</div>
+                <div class="badge-name">30-Day Streak</div>
+                <div class="badge-desc">Unstoppable dedication</div>
+              </div>
+
+              <div class="badge-card">
+                <div class="badge-icon">🏅</div>
+                <div class="badge-name">Goal Achiever</div>
+                <div class="badge-desc">Completed 20 daily goals</div>
+              </div>
+
+              <div class="badge-card">
+                <div class="badge-icon">🎓</div>
+                <div class="badge-name">Level 5 Learner</div>
+                <div class="badge-desc">Steady and consistent growth</div>
+              </div>
+
+              <div class="badge-card">
+                <div class="badge-icon">🌱</div>
+                <div class="badge-name">Fast Learner</div>
+                <div class="badge-desc">Above-average learning pace</div>
+              </div>
+
+              <div class="badge-card">
+                <div class="badge-icon">✨</div>
+                <div class="badge-name">Visual Master</div>
+                <div class="badge-desc">Excellence in visual learning</div>
+              </div>
+
+              <div class="badge-card">
+                <div class="badge-icon">🚀</div>
+                <div class="badge-name">Quick Start</div>
+                <div class="badge-desc">Completed onboarding in style</div>
+              </div>
+            </div>
+
+            <!-- Achievement Stats -->
+            <div class="card">
+              <div class="card-title">📊 Achievement Statistics</div>
+              <div class="stats-grid">
+                <div class="stat-card primary">
+                  <div class="stat-icon">🏆</div>
+                  <div class="stat-label">Total Badges</div>
+                  <div class="stat-value">6</div>
+                  <div class="stat-desc">Earned achievements</div>
+                </div>
+
+                <div class="stat-card success">
+                  <div class="stat-icon">⭐</div>
+                  <div class="stat-label">Top Skill</div>
+                  <div class="stat-value" style="font-size: 18px">
+                    Programming
+                  </div>
+                  <div class="stat-desc">85% completion</div>
+                </div>
+
+                <div class="stat-card info">
+                  <div class="stat-icon">🎯</div>
+                  <div class="stat-label">Avg. Daily Goal</div>
+                  <div class="stat-value">92%</div>
+                  <div class="stat-desc">Goal completion rate</div>
+                </div>
+
+                <div class="stat-card warning">
+                  <div class="stat-icon">⚡</div>
+                  <div class="stat-label">Peak Activity</div>
+                  <div class="stat-value" style="font-size: 18px">Friday</div>
+                  <div class="stat-desc">Most active day</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Milestone Timeline -->
+            <div class="card">
+              <div class="card-title">🎯 Milestone Journey</div>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-title">
+                    🚀 Achieved 100 Learning Minutes
+                  </div>
+                  <div class="timeline-time">4 weeks ago</div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-title">🏅 Reached Level 5 Status</div>
+                  <div class="timeline-time">3 weeks ago</div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-title">✨ Unlocked 6 Badges</div>
+                  <div class="timeline-time">2 weeks ago</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- FOOTER -->
+          <footer class="footer">
+            <p style="margin-bottom: 8px">
+              © 2025 Manabi — Adaptive AI Learning Platform
+            </p>
+            <p style="font-size: 12px">Version 1.0 • All Rights Reserved</p>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ==================== NAVIGATION ====================
+      const sidebarLinks = document.querySelectorAll(".sidebar-nav-link");
+      const sections = document.querySelectorAll(".section");
+      const pageTitle = document.getElementById("pageTitle");
+
+      const sectionTitles = {
+        overview: "📊 Dashboard Overview",
+        profile: "👤 My Profile",
+        progress: "📈 Learning Progress",
+        achievements: "🏆 Achievements",
+      };
+
+      sidebarLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const sectionId = link.dataset.section;
+
+          // Update active links
+          sidebarLinks.forEach((l) => l.classList.remove("active"));
+          link.classList.add("active");
+
+          // Show selected section
+          sections.forEach((s) => s.classList.remove("active"));
+          document
+            .getElementById(`section-${sectionId}`)
+            .classList.add("active");
+
+          // Update page title
+          pageTitle.textContent = sectionTitles[sectionId];
+
+          // Scroll to top
+          document.querySelector(".content").scrollTop = 0;
+        });
+      });
+
+      // ==================== ANIMATE PROGRESS BARS ====================
+      function animateProgressBars() {
+        const progressData = [
+          { bar: "#math-bar", percent: 68 },
+          { bar: "#science-bar", percent: 52 },
+          { bar: "#prog-bar", percent: 85 },
+          { bar: "#lang-bar", percent: 42 },
+          { bar: "#design-bar", percent: 72 },
+        ];
+
+        progressData.forEach((item) => {
+          const bar = document.querySelector(item.bar);
+          setTimeout(() => {
+            bar.style.width = item.percent + "%";
+          }, 100);
+        });
+      }
+
+      // Trigger on page load and when overview section is shown
+      animateProgressBars();
+
+      // ==================== ANIMATE CHART BARS ====================
+      function animateChartBars() {
+        const chartData = [45, 62, 78, 55, 88, 71, 92];
+        const bars = document.querySelectorAll(".chart-bar");
+
+        bars.forEach((bar, index) => {
+          setTimeout(() => {
+            bar.style.height = (chartData[index] / 100) * 160 + "px";
+          }, 100 + index * 80);
+        });
+      }
+
+      function animateChartBarsProgress() {
+        const chartData = [52, 68, 75, 63, 81, 69, 88];
+        const bars = document.querySelectorAll(".chart-bar-progress");
+
+        bars.forEach((bar, index) => {
+          setTimeout(() => {
+            bar.style.height = (chartData[index] / 100) * 160 + "px";
+          }, 100 + index * 80);
+        });
+      }
+
+      animateChartBars();
+
+      // ==================== GENERATE HEATMAP ====================
+      function generateHeatmap() {
+        const heatmap = document.getElementById("heatmap");
+        heatmap.innerHTML = "";
+
+        const levels = [
+          1, 2, 3, 2, 4, 5, 3, 2, 4, 5, 4, 3, 2, 1, 4, 5, 5, 4, 3, 2, 5, 4, 3,
+          2, 1, 3, 4, 5, 4, 2,
+        ];
+
+        levels.forEach((level, index) => {
+          const cell = document.createElement("div");
+          cell.className = `heatmap-cell level-${level}`;
+          cell.title = `Day ${index + 1}: ${level * 20}% active`;
+          cell.style.animation = `fadeIn 0.3s ease ${index * 30}ms forwards`;
+          cell.style.opacity = "0";
+          heatmap.appendChild(cell);
+        });
+      }
+
+      generateHeatmap();
+
+      // ==================== ANIMATE STATS ON LOAD ====================
+      function animateStats() {
+        const stats = [
+          { id: "overview-streak", value: 30 },
+          { id: "overview-time", value: 1482 },
+          { id: "overview-xp", value: 1240 },
+          { id: "progress-streak", value: 30 },
+          { id: "progress-minutes", value: 1482 },
+        ];
+
+        stats.forEach((stat) => {
+          const element = document.getElementById(stat.id);
+          if (element) {
+            let current = 0;
+            const increment = stat.value / 30;
+            const timer = setInterval(() => {
+              current += increment;
+              if (current >= stat.value) {
+                element.textContent = stat.value.toLocaleString();
+                clearInterval(timer);
+              } else {
+                element.textContent = Math.floor(current).toLocaleString();
+              }
+            }, 30);
+          }
+        });
+      }
+
+      // Delay animation for better UX
+      setTimeout(animateStats, 300);
+
+      // ==================== HANDLE SECTION CHANGES ====================
+      const observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          if (mutation.attributeName === "class") {
+            const target = mutation.target;
+            if (
+              target.classList.contains("active") &&
+              target.id === "section-progress"
+            ) {
+              animateChartBarsProgress();
+            }
+          }
+        });
+      });
+
+      sections.forEach((section) => {
+        observer.observe(section, { attributes: true });
+      });
+
+      // ==================== THEME TOGGLE ====================
+      const themeBtn = document.querySelector(".btn-icon");
+      let isDark = false;
+
+      themeBtn.addEventListener("click", () => {
+        isDark = !isDark;
+        document.body.style.filter = isDark ? "invert(0.9)" : "invert(0)";
+        themeBtn.textContent = isDark ? "☀️" : "🌙";
+      });
+
+      // ==================== RESPONSIVE SIDEBAR TOGGLE ====================
+      if (window.innerWidth <= 768) {
+        const sidebar = document.querySelector(".sidebar");
+        sidebarLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            // On mobile, sidebar scrolls back to show content
+            document.querySelector(".content").scrollTop = 0;
+          });
+        });
+      }
+
+      // ==================== SMOOTH SCROLL ====================
+      document.documentElement.style.scrollBehavior = "smooth";
+
+      // Initialize
+      console.log("✨ Manabi Combined Dashboard loaded successfully!");
+    </script>
+  </body>
+</html>

@@ -1,0 +1,778 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Manabi — AI Adaptive Learning</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1d4769',
+            'primary-600': '#15354b',
+            'muted': '#6b7280'
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+            poppins: ['Poppins', 'Inter', 'sans-serif']
+          },
+          boxShadow: {
+            soft: '0 10px 30px rgba(13, 23, 38, 0.08)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root{
+      --primary:#1d4769;
+      --glass: rgba(255,255,255,0.06);
+    }
+    html,body { height:100%; }
+    body{
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      background: linear-gradient(180deg, #f7fbff 0%, #ffffff 100%);
+      color: #0f172a;
+      scroll-behavior: smooth;
+      overscroll-behavior-y: none;
+    }
+
+    .hero-canvas{
+      position:absolute; inset:0; pointer-events:none; z-index:0;
+    }
+
+    .parallax{
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .focus-ring:focus {
+      outline: 3px solid rgba(29,71,105,0.18);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+      animation: slideUp 0.3s ease;
+      position: relative;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #999;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: #333;
+    }
+
+    .modal-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #0f172a;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #1d4769;
+      box-shadow: 0 0 0 3px rgba(29, 71, 105, 0.1);
+    }
+
+    .form-submit {
+      width: 100%;
+      padding: 12px 16px;
+      background: #1d4769;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 16px;
+    }
+
+    .form-submit:hover {
+      background: #15354b;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(29, 71, 105, 0.3);
+    }
+
+    .divider {
+      text-align: center;
+      margin: 24px 0;
+      font-size: 14px;
+      color: #999;
+    }
+
+    .social-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .social-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .social-btn:hover {
+      background: #f3f4f6;
+      border-color: #1d4769;
+      transform: translateY(-2px);
+    }
+
+    .social-icon {
+      font-size: 24px;
+    }
+
+    .social-label {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .toggle-auth {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .toggle-auth button {
+      background: none;
+      border: none;
+      color: #1d4769;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+
+    .toggle-auth button:hover {
+      color: #15354b;
+    }
+
+    @media (max-width: 480px) {
+      .modal-content {
+        padding: 24px;
+        max-width: 90%;
+      }
+
+      .modal-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+  <!-- Page container -->
+  <div id="page" class="relative overflow-x-hidden">
+
+    <!-- NAV -->
+    <header class="fixed w-full z-40 top-0 left-0">
+      <nav class="max-w-7xl mx-auto px-6 lg:px-8 py-4 flex items-center justify-between">
+        <a href="#hero" class="flex items-center gap-3 group" aria-label="Manabi home">
+          <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-gradient-to-br from-primary to-primary-600 shadow-soft">
+            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="3" y="4" width="14" height="16" rx="2" fill="white" opacity=".06"/>
+              <path d="M7 7h8M7 12h8M7 17h5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="hidden sm:block">
+            <div class="text-sm font-semibold" style="font-family:Poppins,Inter">Manabi</div>
+            <div class="text-xs text-muted">Adaptive Learning</div>
+          </div>
+        </a>
+
+        <div class="flex items-center gap-4">
+          <div class="hidden md:flex items-center gap-6 text-sm text-muted">
+            <a href="#features" class="hover:text-primary transition focus-ring">Features</a>
+            <a href="#about" class="hover:text-primary transition focus-ring">Team</a>
+            <a href="#contact" class="hover:text-primary transition focus-ring">Contact</a>
+          </div>
+
+          <!-- Dark Mode toggle -->
+          <button id="themeToggle" class="p-2 rounded-md focus-ring border border-transparent hover:border-gray-200 transition" title="Toggle dark mode">
+            <svg id="themeIcon" class="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <button onclick="openAuthModal('login')" class="hidden sm:inline-block text-sm px-3 py-2 rounded-md hover:bg-gray-50 transition focus-ring">Login</button>
+
+          <button onclick="openAuthModal('signup')" class="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-md text-sm font-medium shadow-soft hover:translate-y-[-2px] transform transition focus-ring" style="background:var(--primary)">
+            Sign Up
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- HERO -->
+    <section id="hero" class="relative min-h-screen pt-28 pb-16 flex items-center">
+      <canvas id="particles" class="hero-canvas"></canvas>
+
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 w-full relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+          <!-- Left content -->
+          <div class="lg:col-span-6 space-y-6">
+            <div class="inline-flex items-center gap-3 bg-white/60 backdrop-blur rounded-full py-1 px-3 text-sm shadow-sm">
+              <span class="px-2 py-1 bg-primary text-white rounded-full text-xs" style="background:var(--primary)">New</span>
+              <span class="text-sm text-slate-600">AI-powered. Accessible. Research-backed.</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight" style="font-family:Poppins,Inter">
+              Personalized Learning for Every Student
+            </h1>
+
+            <p class="text-lg text-slate-600 max-w-xl">
+              Manabi is an AI-powered adaptive learning system that teaches every learner at their pace — visually, verbally, or interactively.
+            </p>
+
+            <div class="flex items-center gap-4 mt-4">
+              <button onclick="openAuthModal('login')" class="px-5 py-3 rounded-md text-sm font-semibold bg-primary text-white shadow hover:shadow-lg transform hover:-translate-y-1 transition focus-ring" style="background:var(--primary); border: none; cursor: pointer;">
+                Login
+              </button>
+              <button onclick="openAuthModal('signup')" class="px-5 py-3 rounded-md text-sm font-semibold border border-primary text-primary hover:bg-primary hover:text-white transition focus-ring" style="border-color:var(--primary); background: none; cursor: pointer;">
+                Sign Up
+              </button>
+            </div>
+
+            <div class="mt-6 flex gap-4 flex-wrap text-sm text-slate-500">
+              <div class="inline-flex items-center gap-3 bg-white rounded-lg px-3 py-2 shadow-soft">
+                <svg class="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2v20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <div>
+                  <div class="text-xs text-slate-400">Students helped</div>
+                  <div class="font-semibold">10k+</div>
+                </div>
+              </div>
+              <div class="inline-flex items-center gap-3 bg-white rounded-lg px-3 py-2 shadow-soft">
+                <svg class="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <div>
+                  <div class="text-xs text-slate-400">Avg. time saved</div>
+                  <div class="font-semibold">2 hrs/wk</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right illustration -->
+          <div class="lg:col-span-6 relative">
+            <div class="relative mx-auto max-w-lg lg:max-w-xl">
+              <div class="parallax relative rounded-2xl p-6 md:p-10 bg-white shadow-soft border border-transparent" style="transform:translateZ(0);">
+                <div class="w-full h-72 md:h-96 rounded-xl overflow-hidden relative" aria-hidden="true">
+                  <div id="heroGraphic" class="absolute inset-0 flex items-center justify-center will-change-transform">
+                    <svg viewBox="0 0 600 420" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI teacher illustration">
+                      <defs>
+                        <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                          <stop offset="0" stop-color="#DDF2FF"/>
+                          <stop offset="1" stop-color="#EAF5FF"/>
+                        </linearGradient>
+                        <linearGradient id="g2" x1="0" x2="1">
+                          <stop offset="0" stop-color="#1d4769"/>
+                          <stop offset="1" stop-color="#15354b"/>
+                        </linearGradient>
+                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                          <feDropShadow dx="0" dy="18" stdDeviation="30" flood-opacity="0.08"/>
+                        </filter>
+                      </defs>
+
+                      <rect x="0" y="0" width="100%" height="100%" rx="20" fill="url(#g1)" filter="url(#shadow)"/>
+                      <g transform="translate(60,40)">
+                        <circle cx="180" cy="110" r="64" fill="url(#g2)" opacity="0.95"/>
+                        <rect x="128" y="180" width="120" height="80" rx="18" fill="#fff" opacity="0.95"/>
+                        <path d="M60 260c40-30 260-30 320 0v12c-60-36-260-36-320 0v-12z" fill="#e2f2ff" opacity="0.7"/>
+                        <g transform="translate(260,50) rotate(-6)">
+                          <ellipse cx="0" cy="0" rx="70" ry="40" fill="#fff" opacity="0.08"/>
+                          <rect x="-46" y="-28" width="92" height="56" rx="8" fill="#fff" opacity="0.06"/>
+                          <circle cx="0" cy="0" r="18" fill="#fff" opacity="0.12"/>
+                        </g>
+                      </g>
+
+                      <circle cx="520" cy="60" r="14" fill="#cfeeff" opacity="0.9"/>
+                      <circle cx="480" cy="380" r="28" fill="#e6f6ff"/>
+                    </svg>
+                  </div>
+
+                  <div class="absolute -bottom-6 left-6 flex gap-3">
+                    <div class="bg-white rounded-xl px-3 py-2 shadow-sm border">
+                      <div class="text-xs text-slate-400">Progress</div>
+                      <div class="text-sm font-semibold">78%</div>
+                    </div>
+                    <div class="bg-white rounded-xl px-3 py-2 shadow-sm border">
+                      <div class="text-xs text-slate-400">Streak</div>
+                      <div class="text-sm font-semibold">14 days</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-6 text-xs text-slate-500">Immersive, multi-modal lessons — visual + verbal + interactive.</div>
+              </div>
+
+              <div class="mt-6 h-6 w-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="py-20">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto">
+          <h2 class="text-3xl font-extrabold">Built for better learning</h2>
+          <p class="text-slate-600 mt-3">Adaptive modules and tools that help learners of all needs succeed.</p>
+        </div>
+
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <article class="feature-card group bg-white rounded-2xl p-6 shadow-soft border transition transform hover:-translate-y-2" data-gsap>
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-primary-600 flex items-center justify-center mb-4 text-white">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M12 2v20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+            <h3 class="text-lg font-semibold">Adaptive Learning</h3>
+            <p class="mt-2 text-sm text-slate-600">AI that changes teaching style based on how you learn.</p>
+          </article>
+
+          <article class="feature-card group bg-white rounded-2xl p-6 shadow-soft border transition transform hover:-translate-y-2" data-gsap>
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-primary-600 flex items-center justify-center mb-4 text-white">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+            <h3 class="text-lg font-semibold">Inclusive for Everyone</h3>
+            <p class="mt-2 text-sm text-slate-600">Supports ADHD, autism, visual & hearing impairments.</p>
+          </article>
+
+          <article class="feature-card group bg-white rounded-2xl p-6 shadow-soft border transition transform hover:-translate-y-2" data-gsap>
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-primary-600 flex items-center justify-center mb-4 text-white">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M3 12h18M12 3v18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </div>
+            <h3 class="text-lg font-semibold">Smart Progress Tracking</h3>
+            <p class="mt-2 text-sm text-slate-600">Daily streaks, goals, badges, and personalized growth.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMAGE + EXPLANATION -->
+    <section id="explain" class="py-20 bg-gradient-to-b from-white to-slate-50">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 items-center gap-10">
+          <div class="lg:col-span-6">
+            <div class="rounded-2xl overflow-hidden shadow-soft">
+              <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800' viewBox='0 0 1200 800'><rect width='100%' height='100%' rx='18' fill='%23eaf5ff'/><g transform='translate(60,60)'><rect x='0' y='100' width='480' height='320' rx='18' fill='%23fff' opacity='0.95'/><circle cx='680' cy='220' r='110' fill='%231d4769' opacity='0.08'/><text x='60' y='80' font-family='Inter' font-size='36' fill='%231d4769'>Learning Illustration</text></g></svg>" alt="Learning illustration placeholder" class="w-full h-auto object-cover">
+            </div>
+          </div>
+
+          <div class="lg:col-span-6">
+            <h3 class="text-3xl font-extrabold">A learning experience made just for you.</h3>
+            <p class="mt-4 text-slate-600 max-w-xl">
+              Every student learns differently — Manabi understands your learning style and teaches in the way you understand best.
+            </p>
+
+            <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="bg-white p-4 rounded-lg shadow-sm">
+                <div class="text-xs text-slate-400">Multimodal</div>
+                <div class="font-semibold">Visual • Verbal • Interactive</div>
+              </div>
+              <div class="bg-white p-4 rounded-lg shadow-sm">
+                <div class="text-xs text-slate-400">Accessibility</div>
+                <div class="font-semibold">Customizable fonts, contrast & pacing</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT / TEAM -->
+    <section id="about" class="py-20">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center">
+          <h2 class="text-3xl font-extrabold">Meet the Team Behind Manabi</h2>
+          <p class="mt-2 text-slate-500 max-w-2xl mx-auto">A small, focused team building accessible, research-driven learning experiences.</p>
+        </div>
+
+        <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="text-center bg-white p-6 rounded-2xl shadow-soft">
+            <div class="w-28 h-28 rounded-full bg-gradient-to-br from-primary to-primary-600 mx-auto flex items-center justify-center text-white text-xl font-semibold">A</div>
+            <div class="mt-4 font-semibold">Ali Khan</div>
+            <div class="text-xs text-slate-400">Lead Developer</div>
+          </div>
+
+          <div class="text-center bg-white p-6 rounded-2xl shadow-soft">
+            <div class="w-28 h-28 rounded-full bg-gradient-to-br from-primary to-primary-600 mx-auto flex items-center justify-center text-white text-xl font-semibold">S</div>
+            <div class="mt-4 font-semibold">Sana Ahmed</div>
+            <div class="text-xs text-slate-400">Product Designer</div>
+          </div>
+
+          <div class="text-center bg-white p-6 rounded-2xl shadow-soft">
+            <div class="w-28 h-28 rounded-full bg-gradient-to-br from-primary to-primary-600 mx-auto flex items-center justify-center text-white text-xl font-semibold">R</div>
+            <div class="mt-4 font-semibold">Raza Mir</div>
+            <div class="text-xs text-slate-400">AI Engineer</div>
+          </div>
+
+          <div class="text-center bg-white p-6 rounded-2xl shadow-soft">
+            <div class="w-28 h-28 rounded-full bg-gradient-to-br from-primary to-primary-600 mx-auto flex items-center justify-center text-white text-xl font-semibold">M</div>
+            <div class="mt-4 font-semibold">Maya Noor</div>
+            <div class="text-xs text-slate-400">Researcher</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contact" class="py-8 border-t bg-white">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-4">
+          <div class="text-sm font-semibold" style="font-family:Poppins,Inter">Manabi</div>
+          <nav class="flex gap-4 text-sm text-slate-600">
+            <a href="#about" class="hover:text-primary transition">About</a>
+            <a href="#contact" class="hover:text-primary transition">Contact</a>
+            <a href="#" class="hover:text-primary transition">Terms</a>
+          </nav>
+        </div>
+
+        <div class="text-sm text-slate-500">Made with <span class="text-red-500">❤</span> at GIKI, Pakistan</div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ==================== AUTH MODALS ==================== -->
+  
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeAuthModal()">×</button>
+      
+      <h2 class="modal-title">Welcome Back</h2>
+
+      <div class="form-group">
+        <input class="form-input" type="email" placeholder="Email" />
+      </div>
+
+      <div class="form-group">
+        <input class="form-input" type="password" placeholder="Password" />
+      </div>
+
+      <button class="form-submit">Login</button>
+
+      <div class="divider">or continue with</div>
+
+      <div class="social-buttons">
+        <div class="social-btn">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+          </div>
+          <div class="social-label">Google</div>
+        </div>
+
+        <div class="social-btn">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          </div>
+          <div class="social-label">Facebook</div>
+        </div>
+
+        <div class="social-btn">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+              <path d="M17.05 13.5c-.91 0-1.64.75-1.64 1.74s.73 1.74 1.64 1.74 1.64-.75 1.64-1.74-.73-1.74-1.64-1.74zM17.05 4.5c-2.05 0-3.71 1.66-3.71 3.71s1.66 3.71 3.71 3.71 3.71-1.66 3.71-3.71-1.66-3.71-3.71-3.71zm5.79 9c0 .55-.45 1-1 1h-.88c-.41 2.03-1.71 3.77-3.43 4.66.1.27.15.57.15.89 0 1.66-1.34 3-3 3s-3-1.34-3-3c0-.32.05-.62.15-.89-1.72-.89-3.02-2.63-3.43-4.66h-.88c-.55 0-1-.45-1-1 0-.55.45-1 1-1h1.12c.38-1.65 1.67-2.97 3.31-2.97s2.93 1.32 3.31 2.97h1.12c.55 0 1 .45 1 1z"/>
+            </svg>
+          </div>
+          <div class="social-label">Apple</div>
+        </div>
+      </div>
+
+      <div class="toggle-auth">
+        Don't have an account? <button onclick="switchModal('signup')">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div id="signupModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeAuthModal()">×</button>
+      
+      <h2 class="modal-title">Create Account</h2>
+
+      <div class="form-group">
+        <input class="form-input" type="text" placeholder="Full Name" />
+      </div>
+
+      <div class="form-group">
+        <input class="form-input" type="email" placeholder="Email" />
+      </div>
+
+      <div class="form-group">
+        <input class="form-input" type="password" placeholder="Password" />
+      </div>
+
+      <button class="form-submit">Sign Up</button>
+
+      <div class="divider">or sign up with</div>
+
+      <div class="social-buttons">
+        <div class="social-btn">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+          </div>
+          <div class="social-label">Google</div>
+        </div>
+
+        <div class="social-btn">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+          </div>
+          <div class="social-label">Facebook</div>
+        </div>
+
+        <div class="social-btn">
+          <div class="social-icon">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+              <path d="M17.05 13.5c-.91 0-1.64.75-1.64 1.74s.73 1.74 1.64 1.74 1.64-.75 1.64-1.74-.73-1.74-1.64-1.74zM17.05 4.5c-2.05 0-3.71 1.66-3.71 3.71s1.66 3.71 3.71 3.71 3.71-1.66 3.71-3.71-1.66-3.71-3.71-3.71zm5.79 9c0 .55-.45 1-1 1h-.88c-.41 2.03-1.71 3.77-3.43 4.66.1.27.15.57.15.89 0 1.66-1.34 3-3 3s-3-1.34-3-3c0-.32.05-.62.15-.89-1.72-.89-3.02-2.63-3.43-4.66h-.88c-.55 0-1-.45-1-1 0-.55.45-1 1-1h1.12c.38-1.65 1.67-2.97 3.31-2.97s2.93 1.32 3.31 2.97h1.12c.55 0 1 .45 1 1z"/>
+            </svg>
+          </div>
+          <div class="social-label">Apple</div>
+        </div>
+      </div>
+
+      <div class="toggle-auth">
+        Already have an account? <button onclick="switchModal('login')">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Modal Functions
+    function openAuthModal(type) {
+      if (type === 'login') {
+        document.getElementById('loginModal').classList.add('active');
+        document.getElementById('signupModal').classList.remove('active');
+      } else {
+        document.getElementById('signupModal').classList.add('active');
+        document.getElementById('loginModal').classList.remove('active');
+      }
+    }
+
+    function closeAuthModal() {
+      document.getElementById('loginModal').classList.remove('active');
+      document.getElementById('signupModal').classList.remove('active');
+    }
+
+    function switchModal(type) {
+      if (type === 'login') {
+        document.getElementById('signupModal').classList.remove('active');
+        document.getElementById('loginModal').classList.add('active');
+      } else {
+        document.getElementById('loginModal').classList.remove('active');
+        document.getElementById('signupModal').classList.add('active');
+      }
+    }
+
+    // Close modal when clicking overlay
+    document.getElementById('loginModal').addEventListener('click', function(e) {
+      if (e.target === this) closeAuthModal();
+    });
+
+    document.getElementById('signupModal').addEventListener('click', function(e) {
+      if (e.target === this) closeAuthModal();
+    });
+
+    // Particles background
+    (function(){
+      const canvas = document.getElementById('particles');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = innerWidth;
+      let h = canvas.height = innerHeight;
+      const particles = [];
+      const count = Math.max(12, Math.floor((w*h) / 120000));
+
+      function rand(min, max){ return Math.random()*(max-min)+min; }
+
+      for(let i=0;i<count;i++){
+        particles.push({
+          x: rand(0,w),
+          y: rand(0,h),
+          r: rand(1,3.6),
+          vx: rand(-0.2,0.6),
+          vy: rand(-0.15,0.15),
+          alpha: rand(0.08,0.22),
+          hue: rand(190,210)
+        });
+      }
+
+      function resize(){ w = canvas.width = innerWidth; h = canvas.height = innerHeight; }
+      addEventListener('resize', resize);
+
+      function draw(){
+        ctx.clearRect(0,0,w,h);
+        for(let p of particles){
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha += Math.sin(Date.now()/5000 + p.x/2000)/5000;
+          if (p.x > w + 20) p.x = -20;
+          if (p.x < -20) p.x = w + 20;
+          if (p.y > h + 20) p.y = -20;
+          if (p.y < -20) p.y = h + 20;
+
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(29,71,105,${p.alpha})`;
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+          ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    // Dark mode toggle
+    (function(){
+      const toggle = document.getElementById('themeToggle');
+      const icon = document.getElementById('themeIcon');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      let dark = localStorage.getItem('manabi-dark') ? JSON.parse(localStorage.getItem('manabi-dark')) : prefersDark;
+
+      function applyTheme(){
+        if (dark) {
+          document.documentElement.style.background = 'linear-gradient(180deg, #071021 0%, #071227 100%)';
+          document.body.style.color = '#e6eef8';
+          icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>';
+          toggle.setAttribute('aria-pressed','true');
+        } else {
+          document.documentElement.style.background = '';
+          document.body.style.color = '';
+          icon.innerHTML = '<path d="M6.76 4.84l-1.8-1.79M1 12h2M17.24 4.84l1.8-1.79M12 1v2M23 12h-2M6.76 19.16l-1.8 1.79M17.24 19.16l1.8 1.79M12 21v-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>';
+          toggle.setAttribute('aria-pressed','false');
+        }
+      }
+      applyTheme();
+
+      toggle.addEventListener('click', () => {
+        dark = !dark;
+        localStorage.setItem('manabi-dark', JSON.stringify(dark));
+        setTimeout(applyTheme, 200);
+      });
+    })();
+
+    // Hero parallax float
+    const heroGraphic = document.getElementById('heroGraphic');
+    if (heroGraphic) {
+      let animationId;
+      function animate() {
+        const time = Date.now() * 0.0005;
+        heroGraphic.style.transform = `translateY(${Math.sin(time) * 8}px) translateX(${Math.cos(time) * 4}px)`;
+        animationId = requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    // Parallax on mousemove
+    const parallaxEl = document.querySelector('.parallax');
+    if (parallaxEl) {
+      window.addEventListener('mousemove', (e) => {
+        const pctX = (e.clientX / window.innerWidth - 0.5) * 12;
+        const pctY = (e.clientY / window.innerHeight - 0.5) * 8;
+        parallaxEl.style.transform = `perspective(1000px) rotateY(${pctX/12}deg) rotateX(${-pctY/12}deg) translateZ(0)`;
+      });
+    }
+
+    console.log('✨ Manabi Landing Page with Auth Modals loaded!');
+  </script>
+</body>
+</html>
