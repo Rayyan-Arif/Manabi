@@ -1,5 +1,5 @@
-import Question from "./script/modules/questionClass.js";
-import quiz from "./script/modules/quizClass.js";
+import Question from "../modules/questionClass.js";
+import quiz from "../modules/quizClass.js";
 
 // Array of questions
 const questions = [
