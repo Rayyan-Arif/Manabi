@@ -1,3 +1,7 @@
+import LearningActivity from "./learningActivityClass.js";
+
+const DAY = 86_400_000;
+
 class User {
 
     constructor(name, degree, institute, country, about) {
@@ -7,11 +11,22 @@ class User {
         this.country = country;
         this.about = about
 
-        this.registeredYear = new Date();
-        this.level = 0;
-        this.learning_minutes = 0;
-        this.experience_points = 0;   
-        this.learningStrengths = [];
+        this.level = 1;
+        this.learning_minutes = 200;
+        this.experience_points = 1400;
+        this.learning_strengths = ["Fast pattern recognition", 
+                                   "Visual Learner", 
+                                   "Hard-working", 
+                                   "Strong problem-solving"
+        ];    // HARD CODED
+        this.registered_year = new Date();
+        this.activity = [230, 500, 105]; // HARD CODED
+        this.streak = 3;
+        this.goal = 120; // minutes
+        this.timeline = [
+            new LearningActivity("Photosynthesis — Animation Lesson", Date.now()-2*DAY),
+            new LearningActivity("Fractions — Visual Guide", Date.now()-14*DAY, true)
+        ];
     }
 
     getTopSkill() {

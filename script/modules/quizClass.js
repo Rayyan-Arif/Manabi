@@ -1,4 +1,4 @@
-class Quiz{
+class Quiz {
     questions = [];
     current_question;
     correct_answers;
@@ -37,3 +37,4 @@ class Quiz{
         
     }
 }
+export default Quiz;

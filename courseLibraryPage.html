@@ -393,6 +393,33 @@
         background: #f8faff;
       }
 
+      /* ==================== ADD COURSE BUTTON ==================== */
+      .add-course-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #4c6ef5, #5d7eff);
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 300;
+        box-shadow: 0 4px 12px rgba(76, 110, 245, 0.2);
+      }
+
+      .add-course-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(76, 110, 245, 0.3);
+      }
+
+      .add-course-btn:active {
+        transform: translateY(0);
+      }
+
       /* ==================== RECOMMENDED SECTION ==================== */
       .recommended-section {
         margin-bottom: 48px;
@@ -664,22 +691,15 @@
         </div>
       </div>
 
-      <!-- ==================== FEATURED COURSES ==================== -->
-      <div class="featured-section">
-        <h2 class="section-title">⭐ Continue....</h2>
-        <div class="carousel-container" id="featuredCarousel"></div>
-      </div>
-
       <!-- ==================== COURSE GRID ==================== -->
       <div class="courses-section">
-        <h2 class="section-title">📚 All Courses</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2 class="section-title">📚 All Courses</h2>
+          <button class="add-course-btn" onclick="addNewCourse()" title="Add new course">
+            <span style="font-size: 28px; display: flex; align-items: center; justify-content: center;">+</span>
+          </button>
+        </div>
         <div class="course-grid" id="courseGrid"></div>
-      </div>
-
-      <!-- ==================== RECOMMENDED SECTION ==================== -->
-      <div class="recommended-section">
-        <h2 class="section-title">💡 Recommended For You</h2>
-        <div class="recommended-container" id="recommendedContainer"></div>
       </div>
     </div>
 
@@ -709,13 +729,10 @@
           description: "Learn the basics of Python programming",
           icon: "🐍",
           instructor: "Dr. Sarah Chen",
-          progress: 0,
-          featured: true,
-          adaptive: true,
         },
         {
           id: 2,
-          title: "Data Structures 101",
+          title: "Data Structures",
           category: "Programming",
           difficulty: "Intermediate",
           duration: "60",
@@ -723,26 +740,9 @@
           description: "Master arrays, linked lists, and trees",
           icon: "🌳",
           instructor: "Prof. James Lee",
-          progress: 35,
-          featured: true,
-          adaptive: false,
         },
         {
           id: 3,
-          title: "Linear Algebra Basics",
-          category: "Math",
-          difficulty: "Beginner",
-          duration: "50",
-          style: "Visual",
-          description: "Vectors, matrices, and transformations",
-          icon: "📐",
-          instructor: "Dr. Emma Watson",
-          progress: 0,
-          featured: false,
-          adaptive: true,
-        },
-        {
-          id: 4,
           title: "Web Development with React",
           category: "Programming",
           difficulty: "Advanced",
@@ -751,26 +751,9 @@
           description: "Build modern web applications",
           icon: "⚛️",
           instructor: "Marcus Johnson",
-          progress: 60,
-          featured: true,
-          adaptive: false,
         },
         {
-          id: 5,
-          title: "Machine Learning Basics",
-          category: "AI & ML",
-          difficulty: "Intermediate",
-          duration: "75",
-          style: "Analogical",
-          description: "Introduction to supervised learning",
-          icon: "🤖",
-          instructor: "Dr. Priya Sharma",
-          progress: 0,
-          featured: true,
-          adaptive: true,
-        },
-        {
-          id: 6,
+          id: 4,
           title: "Calculus II",
           category: "Math",
           difficulty: "Advanced",
@@ -779,82 +762,20 @@
           description: "Integrals, series, and applications",
           icon: "∫",
           instructor: "Prof. Robert Miller",
-          progress: 20,
-          featured: false,
-          adaptive: false,
         },
         {
-          id: 7,
-          title: "Biology for Visual Learners",
-          category: "Science",
-          difficulty: "Beginner",
-          duration: "40",
-          style: "Visual",
-          description: "Cells, genetics, and evolution explained visually",
-          icon: "🧬",
-          instructor: "Dr. Lisa Zhang",
-          progress: 0,
-          featured: false,
-          adaptive: true,
-        },
-        {
-          id: 8,
-          title: "Algorithms & Problem Solving",
-          category: "Programming",
-          difficulty: "Advanced",
-          duration: "100",
-          style: "Dynamic",
-          description: "Solve complex problems with algorithms",
-          icon: "🔍",
-          instructor: "Prof. Alex Kumar",
-          progress: 45,
-          featured: false,
-          adaptive: true,
-        },
-        {
-          id: 9,
-          title: "Audio: Physics Concepts",
+          id: 5,
+          title: "Mechanics and Thermodynamics",
           category: "Science",
           difficulty: "Intermediate",
-          duration: "55",
-          style: "Audio",
-          description: "Motion, energy, and waves explained",
-          icon: "🌊",
+          duration: "85",
+          style: "Visual",
+          description: "Motion, energy, and thermodynamic principles",
+          icon: "⚙️",
           instructor: "Dr. Thomas Brown",
-          progress: 0,
-          featured: false,
-          adaptive: false,
         },
         {
-          id: 10,
-          title: "UI/UX Design Principles",
-          category: "Visual Learning",
-          difficulty: "Beginner",
-          duration: "35",
-          style: "Visual",
-          description: "Create beautiful user experiences",
-          icon: "🎨",
-          instructor: "Design Studio Team",
-          progress: 0,
-          featured: false,
-          adaptive: true,
-        },
-        {
-          id: 11,
-          title: "Statistics Essentials",
-          category: "Math",
-          difficulty: "Intermediate",
-          duration: "65",
-          style: "Visual",
-          description: "Probability, distributions, and inference",
-          icon: "📊",
-          instructor: "Dr. Helen Park",
-          progress: 0,
-          featured: false,
-          adaptive: false,
-        },
-        {
-          id: 12,
+          id: 6,
           title: "Cloud Computing with AWS",
           category: "Programming",
           difficulty: "Advanced",
@@ -863,39 +784,32 @@
           description: "Deploy applications on AWS",
           icon: "☁️",
           instructor: "CloudTech Academy",
-          progress: 0,
-          featured: false,
-          adaptive: true,
+        },
+        {
+          id: 7,
+          title: "Statistics Essentials",
+          category: "Math",
+          difficulty: "Intermediate",
+          duration: "65",
+          style: "Visual",
+          description: "Probability, distributions, and inference",
+          icon: "📊",
+          instructor: "Dr. Helen Park",
+        },
+        {
+          id: 8,
+          title: "Machine Learning Basics",
+          category: "AI & ML",
+          difficulty: "Intermediate",
+          duration: "75",
+          style: "Analogical",
+          description: "Introduction to supervised learning",
+          icon: "🤖",
+          instructor: "Dr. Priya Sharma",
         },
       ];
 
-      const recommendedCourses = [
-        { icon: "👁️", title: "Visual-friendly lesson on Arrays" },
-        { icon: "📖", title: "Analogy-based explanation of Recursion" },
-        { icon: "🎧", title: "Audio lesson for Pointers" },
-        { icon: "⚡", title: "Interactive Deep Dive: OOP Concepts" },
-      ];
-
       // ==================== RENDER FUNCTIONS ====================
-      function renderFeaturedCourses() {
-        const carousel = document.getElementById("featuredCarousel");
-        const featured = coursesData.filter((c) => c.featured);
-
-        carousel.innerHTML = featured
-          .map(
-            (course) => `
-                <div class="featured-card">
-                    <div class="featured-thumbnail">${course.icon}</div>
-                    <div class="featured-content">
-                        <div class="featured-title">${course.title}</div>
-                        <div class="featured-instructor">by ${course.instructor}</div>
-                        <span class="featured-tag">✓ Adaptive</span>
-                    </div>
-                </div>
-            `
-          )
-          .join("");
-      }
 
       function renderCourses(courses = null) {
         const grid = document.getElementById("courseGrid");
@@ -918,24 +832,8 @@
                         <div class="course-tags">
                             <span class="course-tag">${course.style}</span>
                             <span class="course-tag">${course.difficulty}</span>
-                            <span class="course-tag">⏱️ ${
-                              course.duration
-                            } min</span>
+                            <span class="course-tag">⏱️ ${course.duration} min</span>
                         </div>
-                        ${
-                          course.progress > 0
-                            ? `
-                            <div class="progress-bar-container">
-                                <div class="progress-bar" style="width: ${course.progress}%;"></div>
-                            </div>
-                        `
-                            : ""
-                        }
-                        <button class="course-button ${
-                          course.progress > 0 ? "secondary" : ""
-                        }">
-                            ${course.progress > 0 ? "✓ Enrolled" : "📌 Explore"}
-                        </button>
                     </div>
                 </div>
             `
@@ -943,22 +841,22 @@
           .join("");
       }
 
-      function renderRecommended() {
-        const container = document.getElementById("recommendedContainer");
-        container.innerHTML = recommendedCourses
-          .map(
-            (rec) => `
-                <div class="recommended-card">
-                    <div class="recommended-icon">${rec.icon}</div>
-                    <div class="recommended-content">
-                        <div class="recommended-label">Recommended</div>
-                        <div class="recommended-title">${rec.title}</div>
-                    </div>
-                </div>
-            `
-          )
-          .join("");
-      }
+      // ==================== EVENT LISTENERS ====================
+      document
+        .getElementById("searchInput")
+        .addEventListener("input", applyFilters);
+      document
+        .getElementById("categoryFilter")
+        .addEventListener("change", applyFilters);
+      document
+        .getElementById("difficultyFilter")
+        .addEventListener("change", applyFilters);
+      document
+        .getElementById("durationFilter")
+        .addEventListener("change", applyFilters);
+      document
+        .getElementById("styleFilter")
+        .addEventListener("change", applyFilters);
 
       // ==================== FILTER FUNCTIONALITY ====================
       function applyFilters() {
@@ -1001,33 +899,18 @@
         renderCourses(filtered);
       }
 
-      // ==================== EVENT LISTENERS ====================
-      document
-        .getElementById("searchInput")
-        .addEventListener("input", applyFilters);
-      document
-        .getElementById("categoryFilter")
-        .addEventListener("change", applyFilters);
-      document
-        .getElementById("difficultyFilter")
-        .addEventListener("change", applyFilters);
-      document
-        .getElementById("durationFilter")
-        .addEventListener("change", applyFilters);
-      document
-        .getElementById("styleFilter")
-        .addEventListener("change", applyFilters);
-
       // ==================== HELPER FUNCTIONS ====================
       function openSearch() {
         document.getElementById("searchInput").focus();
       }
 
+      function addNewCourse() {
+        alert("Add new course feature coming soon!");
+      }
+
       // ==================== INITIALIZE PAGE ====================
       window.addEventListener("DOMContentLoaded", () => {
-        renderFeaturedCourses();
         renderCourses();
-        renderRecommended();
         console.log("Course Library loaded successfully!");
       });
 
