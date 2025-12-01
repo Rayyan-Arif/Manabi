@@ -3,7 +3,7 @@ import {wait, capitalize, generateRelativeTimestamp} from "../modules/helpers.js
 
 const DAY = 86_400_000;
 
-const user = new User("Abdul Rauf", "BS Computer Science", "GIKI", "Pakistan", "Passionate Computer Scientist, Web Developer, Competitive Programmer");
+const user = new User("Abdul Rauf", "BS Computer Science", "GIKI", "Pakistan", "Passionate Computer Scientist, Web Developer, Competitive Programmer", 120);
 
 const sidebarContainer = document.querySelector(".sidebar-nav");
 const sections = document.querySelectorAll(".section");
@@ -18,12 +18,84 @@ const sectionTitles = {
 
 // ==================== NAVIGATION ====================
 
-sidebarContainer.addEventListener("click", (e) => {
-    const parnet_nav_section = e.target.closest(".sidebar-nav-item");
+sidebarContainer.addEventListener("click", (e) => switchToSection(e.target.closest(".sidebar-nav-item")));
+
+function loadOverview() {
+    generateHeatmap();
+    animateChartBars();
+    setTimeout(animateStats, 300);   
+}
+
+function loadProfile() {
+    document.querySelector(".user-name").textContent = capitalize(user.name);
+    document.querySelector(".user-institute").textContent = `${user.degree} - ${user.institute}, ${user.country}`;
+    document.querySelector(".user-level").textContent = `Level ${user.level} Learner • Active since ${user.registered_year.getFullYear()}`;
+
+    const learning_strengths_tags_container = document.querySelector(".tags-list");
+    const timeline_container = document.querySelector(".timeline");
+
+    learning_strengths_tags_container.innerHTML = "";
+    timeline_container.innerHTML = ""; 
+
+    if (!user.learning_strengths.length)
+        learning_strengths_tags_container.closest(".card").classList.add("hidden");
+
+
+    user.learning_strengths.forEach(strength =>
+        learning_strengths_tags_container.insertAdjacentHTML("beforeend", `<span class="tag">${strength}</span>`)
+    );
+
+    document.querySelector(".user-about-me").textContent = user.about;
+
+
+    user.timeline.forEach(activity => {
+        const time = Math.floor((Date.now()-activity.timestamp)/DAY);
+        const html = `
+            <div class="timeline-item">
+                <div class="timeline-title">
+                    ${activity.completed ? "✅ Completed" : "▶️ Started"} "${activity.course_name}"
+                </div>
+                <div class="timeline-time">${generateRelativeTimestamp(time)} ago</div>
+            </div>`;
+        timeline_container.insertAdjacentHTML("beforeend", html);
+    });
+}
+
+function openEditForm() {
+    const modal_container = document.getElementById("editProfileModal"); 
+    const modal_name = document.getElementById("modalName");
+    const modal_about = document.getElementById("modalAbout");
+    const modal_goal = document.getElementById("modalGoal");
+    
+    modal_container.classList.remove("hidden");
+    modal_name.value = user.name;
+    modal_about.value = user.about;
+    modal_goal.value = user.goal;
+    modal_name.focus();
+}
+
+function closeEditForm() {
+    document.getElementById("editProfileModal").classList.add("hidden");
+}
+function submitEditForm(e) {
+    e.preventDefault();
+
+    const modal_name = document.getElementById("modalName");
+    const modal_about = document.getElementById("modalAbout");
+    const modal_goal = document.getElementById("modalGoal");
+    
+    user.name = modal_name.value || user.name;
+    user.about = modal_about.value || user.about;
+    user.goal = +modal_goal.value;    
+    closeEditForm();
+    loadProfile();
+}
+
+function switchToSection(newSection) {
     sidebarContainer.querySelectorAll(".sidebar-nav-item").forEach((child) => {
         child.querySelector(".sidebar-nav-link").classList.remove("active");
     });
-    const link = parnet_nav_section.querySelector(".sidebar-nav-link");
+    const link = newSection.querySelector(".sidebar-nav-link");
     const section_name = link.dataset.section;
 
     link.classList.add("active");
@@ -45,46 +117,6 @@ sidebarContainer.addEventListener("click", (e) => {
         default: 
             break;
     }
-});
-
-
-function loadOverview() {
-
-}
-
-function loadProfile() {
-    document.querySelector(".user-name").textContent = capitalize(user.name);
-    document.querySelector(".user-institute").textContent = `${user.degree} - ${user.institute}, ${user.country}`;
-    document.querySelector(".user-level").textContent = `Level ${user.level} Learner • Active since ${user.registered_year.getFullYear()}`;
-
-    const learningStrengthsTagsContainer = document.querySelector(".tags-list");
-    const timelineContainer = document.querySelector(".timeline");
-
-    learningStrengthsTagsContainer.innerHTML = "";
-    timelineContainer.innerHTML = ""; 
-
-    if (!user.learning_strengths.length)
-        learningStrengthsTagsContainer.closest(".card").classList.add("hidden");
-
-
-    user.learning_strengths.forEach(strength =>
-        learningStrengthsTagsContainer.insertAdjacentHTML("beforeend", `<span class="tag">${strength}</span>`)
-    );
-
-    document.querySelector(".user-about-me").textContent = user.about;
-
-
-    user.timeline.forEach(activity => {
-        const time = Math.floor((Date.now()-activity.timestamp)/DAY);
-        const html = `
-            <div class="timeline-item">
-                <div class="timeline-title">
-                    ${activity.completed ? "✅ Completed" : "▶️ Started"} "${activity.course_name}"
-                </div>
-                <div class="timeline-time">${generateRelativeTimestamp(time)} ago</div>
-            </div>`;
-        timelineContainer.insertAdjacentHTML("beforeend", html);
-    });
 }
 
 function loadAchievements() {
@@ -179,13 +211,17 @@ if (window.innerWidth <= 768) {
 // ==================== SMOOTH SCROLL ====================
 document.documentElement.style.scrollBehavior = "smooth";
 
+
+
 // Only for testing:
-loadProfile();
+switchToSection(document.querySelector(".nav-item-profile"));
 
 
-// init
-generateHeatmap();
-animateChartBars();
-setTimeout(animateStats, 300);
+document.querySelector(".btn-modal-submit").addEventListener("click", submitEditForm);
+document.querySelector(".btn-modal-cancel").addEventListener("click", closeEditForm);
+document.getElementById("closeModalBtn").addEventListener("click", closeEditForm);
+document.getElementById("editProfileBtn").addEventListener("click", openEditForm);
+
+document.querySelector(".profile-avatar").addEventListener("click", switchToSection.bind(null, document.querySelector(".nav-item-profile")));
 
 console.log("✨ Manabi Combined Dashboard loaded successfully!");

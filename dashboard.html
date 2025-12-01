@@ -26,19 +26,19 @@
         </div>
 
         <nav class="sidebar-nav">
-          <li class="sidebar-nav-item">
-            <a href="#" class="sidebar-nav-link" data-section="overview">
+          <li class="sidebar-nav-item nav-item-overview">
+            <a href="#" class="sidebar-nav-link active" data-section="overview">
               <span class="sidebar-nav-icon">📊</span>
               <span>Overview</span>
             </a>
           </li>
-          <li class="sidebar-nav-item">
-            <a href="#" class="sidebar-nav-link active" data-section="profile">
+          <li class="sidebar-nav-item nav-item-profile">
+            <a href="#" class="sidebar-nav-link" data-section="profile">
               <span class="sidebar-nav-icon">👤</span>
               <span>Profile</span>
             </a>
           </li>
-          <li class="sidebar-nav-item">
+          <li class="sidebar-nav-item nav-item-achievements">
             <a href="#" class="sidebar-nav-link" data-section="achievements">
               <span class="sidebar-nav-icon">🏆</span>
               <span>Achievements</span>
@@ -61,7 +61,7 @@
         <!-- CONTENT -->
         <div class="content">
           <!-- ==================== OVERVIEW SECTION ==================== -->
-          <section class="section" id="section-overview">
+          <section class="section active" id="section-overview">
             <div class="stats-grid">
               <div class="stat-card primary">
                 <div class="stat-icon">🔥</div>
@@ -144,7 +144,7 @@
           </section>
 
           <!-- ==================== PROFILE SECTION ==================== -->
-          <section class="section active" id="section-profile">
+          <section class="section" id="section-profile">
             <div class="profile-header">
               <div class="profile-avatar-large">👤</div>
               <div class="profile-info">
@@ -154,9 +154,40 @@
                   Level 5 Learner • Active since 2024
                 </p>
                 <div class="profile-buttons">
-                  <button class="btn-primary">Edit Profile</button>
+                  <button class="btn-primary" id="editProfileBtn">Edit Profile</button>
                   <button class="btn-secondary">Settings</button>
                 </div>
+              </div>
+            </div>
+
+            <!-- Edit Profile Modal -->
+            <div class="modal-overlay hidden" id="editProfileModal">
+              <div class="modal">
+                <div class="modal-header">
+                  <h2 class="modal-title">Edit Profile</h2>
+                  <button class="modal-close" id="closeModalBtn">✕</button>
+                </div>
+                <form class="modal-form" id="editProfileForm">
+                  <div class="form-group">
+                    <label for="modalName" class="form-label">Name</label>
+                    <input type="text" id="modalName" class="form-input" placeholder="Enter your name" required />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="modalAbout" class="form-label">About</label>
+                    <textarea id="modalAbout" class="form-textarea" placeholder="Tell us about yourself" rows="5"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="modalGoal" class="form-label">Learning Goal (minutes/day)</label>
+                    <input type="number" id="modalGoal" class="form-input" placeholder="Enter daily learning goal" min="0" max="1440" required />
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="button" class="btn-modal-cancel" id="cancelModalBtn">Cancel</button>
+                    <button type="submit" class="btn-modal-submit">Submit Changes</button>
+                  </div>
+                </form>
               </div>
             </div>
 
@@ -209,37 +240,37 @@
 
             <div class="badges-grid">
               <div class="badge-card">
-                <div class="badge-icon">🔥</div>
+                <div class="badge-icon">🏆</div>
                 <div class="badge-name">30-Day Streak</div>
                 <div class="badge-desc">Unstoppable dedication</div>
               </div>
 
               <div class="badge-card">
-                <div class="badge-icon">🏅</div>
+                <div class="badge-icon">🏆</div>
                 <div class="badge-name">Goal Achiever</div>
                 <div class="badge-desc">Completed 20 daily goals</div>
               </div>
 
               <div class="badge-card">
-                <div class="badge-icon">🎓</div>
+                <div class="badge-icon">🏆</div>
                 <div class="badge-name">Level 5 Learner</div>
                 <div class="badge-desc">Steady and consistent growth</div>
               </div>
 
               <div class="badge-card">
-                <div class="badge-icon">🌱</div>
+                <div class="badge-icon">🏆</div>
                 <div class="badge-name">Fast Learner</div>
                 <div class="badge-desc">Above-average learning pace</div>
               </div>
 
               <div class="badge-card">
-                <div class="badge-icon">✨</div>
+                <div class="badge-icon">🏆</div>
                 <div class="badge-name">Visual Master</div>
                 <div class="badge-desc">Excellence in visual learning</div>
               </div>
 
               <div class="badge-card">
-                <div class="badge-icon">🚀</div>
+                <div class="badge-icon">🏆</div>
                 <div class="badge-name">Quick Start</div>
                 <div class="badge-desc">Completed onboarding in style</div>
               </div>
