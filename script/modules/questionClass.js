@@ -41,3 +41,5 @@ class Question{
         return this.description_of_question;
     }
 }
+
+export default Question;
