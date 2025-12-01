@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manabi â€” Learning Studio</title>
+    <title>Manabi  Learning Studio</title>
     <style>
       * {
         margin: 0;
@@ -304,31 +304,6 @@
       .text-input:focus {
         border-color: #1d4769;
         box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
-      }
-
-      .mic-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #1d4769;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 18px;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-      }
-
-      .mic-btn:hover {
-        background: #3d54d4;
-        transform: scale(1.05);
-      }
-
-      .mic-btn.active {
-        animation: pulse 1s infinite;
       }
 
       @keyframes pulse {
@@ -884,8 +859,8 @@
         <div class="page-title">Learning Studio</div>
       </div>
       <div class="navbar-right">
-        <button class="icon-btn" title="Settings">âš™ï¸</button>
-        <button class="icon-btn" title="Profile">ðŸ‘¤</button>
+        <button class="icon-btn" title="Settings">⚙</button>
+        <button class="icon-btn" title="Profile">👤</button>
       </div>
     </div>
 
@@ -894,7 +869,7 @@
       <!-- LEFT PANEL: AI Chat Tutor -->
       <div class="panel left-panel active">
         <div class="panel-header">
-          <div class="panel-title">ðŸ’¬ Chat with Manabi AI</div>
+          <div class="panel-title">💬 Chat with Manabi AI</div>
           <div class="panel-subtitle">
             Ask anything. I'll adapt the explanation for your learning style.
           </div>
@@ -902,7 +877,7 @@
 
         <div class="chat-container" id="chatContainer">
           <div class="message ai-message">
-            <div class="avatar">âœ¨</div>
+            <div class="avatar">✨</div>
             <div>
               <div class="message-bubble ai-bubble">
                 Hi! I'm Manabi, your AI tutor. What would you like to learn
@@ -922,22 +897,22 @@
             class="prompt-chip"
             onclick="addPrompt('Explain photosynthesis visually')"
           >
-            ðŸŽ¨ Explain visually
+             🎨 Explain visually
           </div>
           <div
             class="prompt-chip"
             onclick="addPrompt('Give me a real-life example')"
           >
-            ðŸŒ Real-life example
+             🌍 Real-life example
           </div>
           <div class="prompt-chip" onclick="addPrompt('Repeat this slower')">
-            ðŸ¢ Repeat slower
+             🐢 Repeat slower
           </div>
           <div
             class="prompt-chip"
             onclick="addPrompt('Speak this explanation')"
           >
-            ðŸ”Š Speak explanation
+             🔊 Speak explanation
           </div>
         </div>
 
@@ -946,19 +921,11 @@
             type="text"
             class="text-input"
             id="chatInput"
-            placeholder="Type your questionâ€¦"
+            placeholder="Type your question"
             onkeypress="handleEnter(event)"
           />
-          <button
-            class="mic-btn"
-            id="micBtn"
-            onclick="toggleMic()"
-            title="Voice Input"
-          >
-            ðŸŽ¤
-          </button>
           <button class="send-btn" onclick="sendMessage()" title="Send">
-            âž¤
+            ➤
           </button>
         </div>
       </div>
@@ -966,7 +933,7 @@
       <!-- CENTER PANEL: Visual Learning -->
       <div class="panel center-panel active">
         <div class="panel-header">
-          <div class="panel-title">ðŸŽ¨ Visual Learning View</div>
+          <div class="panel-title">🎨 Visual Learning View</div>
         </div>
 
         <div class="mode-selector" id="modeSelector">
@@ -983,7 +950,7 @@
 
         <div class="visual-content" id="visualContent">
           <div class="empty-state">
-            <div class="empty-icon">ðŸ“š</div>
+            <div class="empty-icon"></div>
             <div class="empty-text">
               Ask a question to see visual learning content here
             </div>
@@ -994,7 +961,7 @@
       <!-- RIGHT PANEL: History Timeline -->
       <div class="panel right-panel active">
         <div class="panel-header">
-          <div class="panel-title">ðŸ“œ History</div>
+          <div class="panel-title"> History</div>
         </div>
 
         <div class="filter-buttons" id="filterButtons">
@@ -1020,7 +987,7 @@
 
         <div class="history-timeline" id="historyTimeline">
           <div class="empty-state">
-            <div class="empty-icon">â±ï¸</div>
+            <div class="empty-icon"></div>
             <div class="empty-text">Your learning history will appear here</div>
           </div>
         </div>
@@ -1036,11 +1003,11 @@
     <!-- Footer -->
     <div class="footer">
       <a href="#">Help</a>
-      <span class="footer-divider">â€¢</span>
+      <span class="footer-divider"></span>
       <a href="#">Privacy</a>
-      <span class="footer-divider">â€¢</span>
+      <span class="footer-divider"></span>
       <a href="#">Terms</a>
-      <span class="footer-divider">â€¢</span>
+      <span class="footer-divider"></span>
       <span class="version-badge">Manabi v1.0</span>
     </div>
 
@@ -1060,20 +1027,20 @@
           title: "Visual Explanation",
           content: `
                     <div class="content-block">
-                        <div class="diagram">ðŸ“Š Flowchart Diagram</div>
+                        <div class="diagram"> Flowchart Diagram</div>
                         <div class="flowchart">
                             <div class="flowchart-step">
                                 <strong>Step 1:</strong> Understand the main concept
                             </div>
-                            <div class="arrow">â†“</div>
+                            <div class="arrow"></div>
                             <div class="flowchart-step">
                                 <strong>Step 2:</strong> Break down into smaller parts
                             </div>
-                            <div class="arrow">â†“</div>
+                            <div class="arrow"></div>
                             <div class="flowchart-step">
                                 <strong>Step 3:</strong> Connect with real examples
                             </div>
-                            <div class="arrow">â†“</div>
+                            <div class="arrow"></div>
                             <div class="flowchart-step">
                                 <strong>Step 4:</strong> Master through practice
                             </div>
@@ -1086,7 +1053,7 @@
           content: `
                     <div class="content-block">
                         <div class="analogy-box">
-                            <div class="analogy-label">ðŸŒ Analogy</div>
+                            <div class="analogy-label"> Analogy</div>
                             <p>Think of this concept like a tree:</p>
                             <ul style="margin: 8px 0 0 16px; line-height: 1.8;">
                                 <li><strong>Roots</strong> = Foundation concepts</li>
@@ -1103,7 +1070,7 @@
           content: `
                     <div class="content-block">
                         <div class="audio-player">
-                            <button class="play-btn">â–¶ï¸</button>
+                            <button class="play-btn"></button>
                             <div class="progress-bar"><div class="progress-fill"></div></div>
                             <div class="time-text">2:45</div>
                         </div>
@@ -1119,8 +1086,8 @@
           title: "Step-by-Step Animation",
           content: `
                     <div class="content-block">
-                        <div class="diagram" style="background: linear-gradient(135deg, #1d4769, #2d5a8c); color: white; animation: fadeInScale 0.8s ease-out;">ðŸŽ¬ Step 1 of 4</div>
-                        <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 12px;">Playing animation... â–¶ï¸</div>
+                        <div class="diagram" style="background: linear-gradient(135deg, #1d4769, #2d5a8c); color: white; animation: fadeInScale 0.8s ease-out;"> Step 1 of 4</div>
+                        <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 12px;">Playing animation... </div>
                     </div>
                 `,
         },
@@ -1192,7 +1159,7 @@
                 `;
         } else {
           messageDiv.innerHTML = `
-                    <div class="avatar">âœ¨</div>
+                    <div class="avatar"></div>
                     <div>
                         <div class="message-bubble ai-bubble">${escapeHtml(
                           message
@@ -1242,9 +1209,9 @@
                 </div>
                 ${modeData.content}
                 <div class="visual-controls">
-                    <button class="control-btn">ðŸ”„ Re-generate Explanation</button>
-                    <button class="control-btn secondary">ðŸ“Œ Add to Notes</button>
-                    <button class="control-btn secondary">â›¶ Fullscreen</button>
+                    <button class="control-btn"> Re-generate Explanation</button>
+                    <button class="control-btn secondary"> Add to Notes</button>
+                    <button class="control-btn secondary"> Fullscreen</button>
                 </div>
             `;
 
@@ -1280,7 +1247,7 @@
         if (filteredHistory.length === 0) {
           timeline.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-icon">â±ï¸</div>
+                        <div class="empty-icon"></div>
                         <div class="empty-text">No items in this filter</div>
                     </div>
                 `;
@@ -1321,13 +1288,13 @@
       // Get icon for history type
       function getIconForType(type) {
         const icons = {
-          questions: "ðŸ’¬",
-          visuals: "ðŸŽ¨",
-          audio: "ðŸ”Š",
-          examples: "ðŸ“–",
-          quizzes: "ðŸ“",
+          questions: "",
+          visuals: "",
+          audio: "",
+          examples: "",
+          quizzes: "",
         };
-        return icons[type] || "ðŸ“Œ";
+        return icons[type] || "";
       }
 
       // Get relative time string
@@ -1382,11 +1349,11 @@
 
         if (state.isMicActive) {
           micBtn.classList.add("active");
-          micBtn.textContent = "ðŸŽ™ï¸";
+          micBtn.textContent = "";
           micBtn.style.background = "#E53E3E";
         } else {
           micBtn.classList.remove("active");
-          micBtn.textContent = "ðŸŽ¤";
+          micBtn.textContent = "";
           micBtn.style.background = "";
           addMessageToChat(
             'Voice input received: "Can you explain photosynthesis?"',
@@ -1427,4 +1394,5 @@
     </script>
   </body>
 </html>
+
 
