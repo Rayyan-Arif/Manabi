@@ -18,6 +18,24 @@
     --bg-light: #f9fafb;
     --bg-white: #ffffff;
     --border: #e5e7eb;
+    --bg-gradient: linear-gradient(135deg, var(--bg-light) 0%, #f0f4ff 100%);
+  }
+
+  :root.dark-mode {
+    --primary: #1d4769;
+    --accent: #1e3a4c;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #3b82f6;
+    --purple: #8b5cf6;
+    --pink: #ec4899;
+    --text-dark: #f1f5f9;
+    --text-light: #cbd5e1;
+    --bg-light: #1f2937;
+    --bg-white: #1a1a2e;
+    --border: #374151;
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1a202c 100%);
   }
 
   html {
@@ -26,10 +44,11 @@
 
   body {
     font-family: "Inter", "Poppins", sans-serif;
-    background: linear-gradient(135deg, var(--bg-light) 0%, #f0f4ff 100%);
+    background: var(--bg-gradient);
     color: var(--text-dark);
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background 0.3s ease, color 0.3s ease;
   }
 
   /* ==================== MY CLASSES ==================== */
@@ -94,6 +113,10 @@
     letter-spacing: -0.5px;
   }
 
+  :root.dark-mode .sidebar-logo-text {
+    color: #60a5fa;
+  }
+
   .sidebar-user {
     font-size: 13px;
     color: var(--text-light);
@@ -135,6 +158,12 @@
     font-weight: 600;
   }
 
+  :root.dark-mode .sidebar-nav-link.active {
+    background: #2d4a5f;
+    color: #60a5fa;
+    border-left-color: #60a5fa;
+  }
+
   .sidebar-nav-icon {
     font-size: 20px;
     min-width: 24px;
@@ -165,6 +194,10 @@
     font-size: 22px;
     font-weight: 700;
     color: var(--primary);
+  }
+
+  :root.dark-mode .topbar-title {
+    color: #60a5fa;
   }
 
   .topbar-actions {
@@ -538,6 +571,12 @@
     font-weight: 600;
   }
 
+  :root.dark-mode .tag {
+    background: #2d4a5f;
+    color: #60a5fa;
+    border: 1px solid #3d5a7f;
+  }
+
   /* ==================== TIMELINE ==================== */
   .timeline {
     position: relative;
@@ -582,6 +621,21 @@
     }
   }
 
+  /* ==================== TYPEWRITER ANIMATION ==================== */
+  @keyframes blink {
+    0%, 49% {
+      border-right-color: var(--primary);
+    }
+    50%, 100% {
+      border-right-color: transparent;
+    }
+  }
+
+  .typewriter {
+    border-right: 3px solid var(--primary);
+    animation: blink 0.6s step-end infinite;
+  }
+
   .timeline-item::before {
     content: "";
     position: absolute;
@@ -592,6 +646,11 @@
     background: var(--primary);
     border-radius: 50%;
     box-shadow: 0 0 0 4px var(--accent);
+  }
+
+  :root.dark-mode .timeline-item::before {
+    background: #60a5fa;
+    box-shadow: 0 0 0 4px #1e3a4c;
   }
 
   .timeline-title {
@@ -645,6 +704,27 @@
   }
   .heatmap-cell.level-5 {
     background: #1d4769;
+  }
+
+  /* Dark mode heatmap - greenish GitHub style */
+  :root.dark-mode .heatmap-cell.level-1 {
+    background: #0e4429;
+  }
+
+  :root.dark-mode .heatmap-cell.level-2 {
+    background: #006d32;
+  }
+
+  :root.dark-mode .heatmap-cell.level-3 {
+    background: #26a641;
+  }
+
+  :root.dark-mode .heatmap-cell.level-4 {
+    background: #39d353;
+  }
+
+  :root.dark-mode .heatmap-cell.level-5 {
+    background: #56d364;
   }
 
   /* ==================== RECOMMENDED SECTION ==================== */
@@ -755,6 +835,35 @@
     margin-top: 8px;
     color: var(--text-light);
     font-weight: 600;
+  }
+
+  /* Dark mode chart bars - brighter for better visibility */
+  :root.dark-mode .chart-bar.blue {
+    background: linear-gradient(180deg, #60a5fa, #38bdf8);
+  }
+
+  :root.dark-mode .chart-bar.green {
+    background: linear-gradient(180deg, #34d399, #6ee7b7);
+  }
+
+  :root.dark-mode .chart-bar.purple {
+    background: linear-gradient(180deg, #a78bfa, #c4b5fd);
+  }
+
+  :root.dark-mode .chart-bar.pink {
+    background: linear-gradient(180deg, #f472b6, #fbcfe8);
+  }
+
+  :root.dark-mode .chart-bar.amber {
+    background: linear-gradient(180deg, #fbbf24, #fcd34d);
+  }
+
+  :root.dark-mode .chart-bar.red {
+    background: linear-gradient(180deg, #f87171, #fca5a5);
+  }
+
+  :root.dark-mode .chart-bar.dark {
+    background: linear-gradient(180deg, #60a5fa, #3b82f6);
   }
 
   /* ==================== CIRCULAR PROGRESS ==================== */

@@ -8,7 +8,7 @@ class Course {
         this.style = style;
         this.description = description;
         this.icon = icon;
-        this.instructor = instructor;
+        // this.instructor = instructor;
     }
 };
 
