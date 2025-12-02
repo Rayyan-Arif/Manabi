@@ -1,0 +1,98 @@
+:root {
+  --primary: #1d4769;
+  --accent: #e8f2fa;
+  --muted: #64748b;
+  --bg: #f8fafc;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  font-family: "Inter", system-ui, -apple-system, "Poppins", "Segoe UI", Roboto,
+    sans-serif;
+  background: var(--bg);
+  color: #071029;
+}
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(29, 71, 105, 0.06);
+}
+body.dark {
+  background: #071029;
+  color: #e6eef9;
+}
+body.dark .glass {
+  background: rgba(7, 16, 41, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+.btn-primary {
+  background: linear-gradient(90deg, var(--primary), #23597f);
+  color: white;
+}
+.btn-primary:hover {
+  box-shadow: 0 8px 30px rgba(29, 71, 105, 0.18);
+  transform: translateY(-2px);
+}
+.option-selected {
+  outline: 3px solid rgba(29, 71, 105, 0.12);
+  box-shadow: 0 8px 24px rgba(29, 71, 105, 0.08);
+  transform: scale(1.02);
+}
+.progress-track {
+  height: 8px;
+  background: rgba(29, 71, 105, 0.08);
+  border-radius: 999px;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #2d5a8c);
+  border-radius: 999px;
+  width: 0%;
+}
+/* custom slider */
+input[type="range"] {
+  width: 100%;
+  height: 8px;
+  background: transparent;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  background: linear-gradient(90deg, var(--primary), #2d5a8c);
+  border-radius: 999px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  margin-top: -8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: white;
+  border: 4px solid var(--primary);
+  box-shadow: 0 8px 20px rgba(29, 71, 105, 0.18);
+}
+.confetti-piece {
+  position: fixed;
+  will-change: transform, opacity;
+  z-index: 9999;
+}
+/* small utilities */
+.glass-soft {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 255, 255, 0.72)
+  );
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+@media (max-width: 900px) {
+  .layout-cols {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    display: none;
+  }
+}
