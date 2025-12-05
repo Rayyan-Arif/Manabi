@@ -1,4 +1,4 @@
-import Course from "./script/modules/courseClass.js";
+import Course from "../modules/courseClass.js";
 // Note: Import will be used later when needed
 
 // ==================== NIGHT MODE FUNCTIONALITY ====================
