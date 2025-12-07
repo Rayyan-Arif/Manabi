@@ -1,1398 +1,762 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Manabi  Learning Studio</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-        background: #f7f9ff;
-        color: #1a202c;
-        overflow: hidden;
-      }
-
-      /* ===== NAVIGATION BAR ===== */
-      .navbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 28px;
-        background: white;
-        border-bottom: 1px solid #e6e9ef;
-        height: 70px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-      }
-
-      .navbar-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .logo {
-        font-size: 22px;
-        font-weight: 700;
-        color: #1d4769;
-        letter-spacing: -0.5px;
-      }
-
-      .logo-icon {
-        width: 32px;
-        height: 32px;
-        background: linear-gradient(135deg, #1d4769, #2d5a8c);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        font-size: 16px;
-      }
-
-      .navbar-center {
-        flex: 1;
-        text-align: center;
-      }
-
-      .page-title {
-        font-size: 18px;
-        font-weight: 600;
-        color: #1a202c;
-      }
-
-      .navbar-right {
-        display: flex;
-        align-items: center;
-        gap: 18px;
-      }
-
-      .icon-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #f0f2f7;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        transition: all 0.3s ease;
-        color: #1d4769;
-      }
-
-      .icon-btn:hover {
-        background: #e6e9ef;
-        transform: scale(1.05);
-      }
-
-      /* ===== MAIN CONTAINER ===== */
-      .main-container {
-        display: grid;
-        grid-template-columns: 30% 45% 25%;
-        gap: 24px;
-        padding: 24px;
-        height: calc(100vh - 70px);
-        overflow: hidden;
-      }
-
-      .panel {
-        background: white;
-        border-radius: 14px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-
-      /* ===== LEFT PANEL: CHAT ===== */
-      .left-panel {
-        position: relative;
-      }
-
-      .panel-header {
-        padding: 20px 20px 16px;
-        border-bottom: 1px solid #f0f2f7;
-      }
-
-      .panel-title {
-        font-size: 18px;
-        font-weight: 700;
-        color: #1a202c;
-        margin-bottom: 4px;
-      }
-
-      .panel-subtitle {
-        font-size: 12px;
-        color: #718096;
-        line-height: 1.4;
-      }
-
-      .chat-container {
-        flex: 1;
-        overflow-y: auto;
-        padding: 20px 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-      }
-
-      .chat-container::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      .chat-container::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
-      .chat-container::-webkit-scrollbar-thumb {
-        background: #dce3ff;
-        border-radius: 3px;
-      }
-
-      .message {
-        display: flex;
-        gap: 10px;
-        animation: slideIn 0.3s ease-out;
-      }
-
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+    <title>Manabi - Learning Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: '#f0f4f8',
+                100: '#d9e2ec',
+                500: '#1d4769',
+                600: '#1d4769',
+                700: '#2d5a8c',
+                800: '#1a202c',
+              }
+            }
+          }
         }
       }
-
-      .ai-message {
-        justify-content: flex-start;
-      }
-
-      .user-message {
-        justify-content: flex-end;
-      }
-
-      .avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #1d4769, #2d5a8c);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 16px;
-        flex-shrink: 0;
-      }
-
-      .user-avatar {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-      }
-
-      .message-bubble {
-        max-width: 85%;
-        padding: 12px 16px;
-        border-radius: 14px;
-        font-size: 14px;
-        line-height: 1.5;
-        word-wrap: break-word;
-      }
-
-      .ai-bubble {
-        background: #f0f2f7;
-        color: #1a202c;
-        border: 1px solid #dce3ff;
-      }
-
-      .user-bubble {
-        background: #1d4769;
-        color: white;
-      }
-
-      .action-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 8px;
-        padding-left: 42px;
-      }
-
-      .action-btn {
-        font-size: 11px;
-        padding: 6px 10px;
-        background: #f0f2f7;
-        border: 1px solid #dce3ff;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        color: #1d4769;
-        font-weight: 500;
-      }
-
-      .action-btn:hover {
-        background: #dce3ff;
-        transform: translateY(-1px);
-      }
-
-      .suggested-prompts {
-        padding: 16px;
-        border-top: 1px solid #f0f2f7;
-        overflow-x: auto;
-        display: flex;
-        gap: 10px;
-        scroll-behavior: smooth;
-      }
-
-      .suggested-prompts::-webkit-scrollbar {
-        height: 4px;
-      }
-
-      .suggested-prompts::-webkit-scrollbar-thumb {
-        background: #dce3ff;
-        border-radius: 2px;
-      }
-
-      .prompt-chip {
-        padding: 8px 14px;
-        background: #f0f2f7;
-        border: 1px solid #dce3ff;
-        border-radius: 20px;
-        font-size: 12px;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: all 0.2s ease;
-        color: #1d4769;
-        font-weight: 500;
-        flex-shrink: 0;
-      }
-
-      .prompt-chip:hover {
-        background: #dce3ff;
-        transform: translateY(-2px);
-      }
-
-      .input-area {
-        display: flex;
-        gap: 10px;
-        padding: 16px;
-        border-top: 1px solid #f0f2f7;
-        align-items: center;
-      }
-
-      .text-input {
-        flex: 1;
-        border: 1px solid #dce3ff;
-        border-radius: 24px;
-        padding: 12px 16px;
-        font-size: 14px;
-        font-family: "Inter", sans-serif;
-        transition: all 0.2s ease;
-        outline: none;
-      }
-
-      .text-input:focus {
-        border-color: #1d4769;
-        box-shadow: 0 0 0 3px rgba(76, 110, 245, 0.1);
-      }
-
-      @keyframes pulse {
-        0%,
-        100% {
-          box-shadow: 0 0 0 0 rgba(76, 110, 245, 0.7);
-        }
-        50% {
-          box-shadow: 0 0 0 8px rgba(76, 110, 245, 0.2);
-        }
-      }
-
-      .send-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #1d4769;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 18px;
-        transition: all 0.2s ease;
-        flex-shrink: 0;
-      }
-
-      .send-btn:hover {
-        background: #3d54d4;
-        transform: scale(1.05);
-      }
-
-      .send-btn:active {
-        transform: scale(0.95);
-      }
-
-      /* ===== CENTER PANEL: VISUAL LEARNING ===== */
-      .center-panel {
-        position: relative;
-      }
-
-      .mode-selector {
-        display: flex;
-        gap: 8px;
-        padding: 16px 20px;
-        border-bottom: 1px solid #f0f2f7;
-        overflow-x: auto;
-      }
-
-      .mode-selector::-webkit-scrollbar {
-        height: 4px;
-      }
-
-      .mode-chip {
-        padding: 8px 14px;
-        background: #f0f2f7;
-        border: 1px solid #dce3ff;
-        border-radius: 20px;
-        font-size: 12px;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: all 0.2s ease;
-        color: #718096;
-        font-weight: 500;
-        flex-shrink: 0;
-      }
-
-      .mode-chip.active {
-        background: #1d4769;
-        color: white;
-        border-color: #1d4769;
-      }
-
-      .mode-chip:hover {
-        transform: translateY(-2px);
-      }
-
-      .visual-content {
-        flex: 1;
-        padding: 24px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .visual-content::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      .visual-content::-webkit-scrollbar-thumb {
-        background: #dce3ff;
-        border-radius: 3px;
-      }
-
-      .content-block {
-        opacity: 0;
-        animation: fadeIn 0.4s ease-out forwards;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .diagram {
-        background: #f0f2f7;
-        border: 2px solid #dce3ff;
-        border-radius: 12px;
-        padding: 30px;
-        text-align: center;
-        min-height: 150px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 48px;
-        color: #1d4769;
-      }
-
-      .flowchart {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .flowchart-step {
-        background: #f0f2f7;
-        padding: 16px;
-        border-radius: 8px;
-        border-left: 4px solid #1d4769;
-        font-size: 13px;
-        line-height: 1.6;
-      }
-
-      .flowchart-step strong {
-        color: #1d4769;
-      }
-
-      .arrow {
-        text-align: center;
-        color: #2d5a8c;
-        font-size: 20px;
-      }
-
-      .analogy-box {
-        background: linear-gradient(135deg, #f0f2f7, #f7f9ff);
-        border: 1px solid #dce3ff;
-        border-radius: 10px;
-        padding: 16px;
-        font-size: 13px;
-        line-height: 1.6;
-      }
-
-      .analogy-label {
-        font-weight: 700;
-        color: #1d4769;
-        margin-bottom: 8px;
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .audio-player {
-        background: #f0f2f7;
-        border: 1px solid #dce3ff;
-        border-radius: 10px;
-        padding: 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .play-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #1d4769;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 16px;
-        flex-shrink: 0;
-        transition: all 0.2s ease;
-      }
-
-      .play-btn:hover {
-        background: #3d54d4;
-        transform: scale(1.05);
-      }
-
-      .progress-bar {
-        flex: 1;
-        height: 4px;
-        background: #dce3ff;
-        border-radius: 2px;
-        overflow: hidden;
-      }
-
-      .progress-fill {
-        height: 100%;
-        background: #1d4769;
-        width: 0%;
-        animation: progressMove 8s ease-out;
-      }
-
-      @keyframes progressMove {
-        from {
-          width: 0%;
-        }
-        to {
-          width: 100%;
-        }
-      }
-
-      .time-text {
-        font-size: 12px;
-        color: #718096;
-        min-width: 30px;
-        text-align: right;
-      }
-
-      .transcript-box {
-        background: #f0f2f7;
-        border: 1px solid #dce3ff;
-        border-radius: 8px;
-        padding: 12px;
-        font-size: 13px;
-        line-height: 1.6;
-        color: #1d4769;
-        font-style: italic;
-      }
-
-      .minimal-text {
-        font-size: 14px;
-        line-height: 1.8;
-        color: #2d3748;
-      }
-
-      .visual-controls {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-top: 12px;
-      }
-
-      .control-btn {
-        padding: 10px 16px;
-        background: #1d4769;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .control-btn:hover {
-        background: #3d54d4;
-        transform: translateY(-2px);
-      }
-
-      .control-btn.secondary {
-        background: #f0f2f7;
-        color: #1d4769;
-        border: 1px solid #dce3ff;
-      }
-
-      .control-btn.secondary:hover {
-        background: #dce3ff;
-      }
-
-      /* ===== RIGHT PANEL: HISTORY ===== */
-      .right-panel {
-        position: relative;
-      }
-
-      .filter-buttons {
-        display: flex;
-        gap: 6px;
-        padding: 14px 16px;
-        border-bottom: 1px solid #f0f2f7;
-        flex-wrap: wrap;
-        overflow-y: auto;
-        max-height: 60px;
-      }
-
-      .filter-buttons::-webkit-scrollbar {
-        height: 4px;
-      }
-
-      .filter-btn {
-        padding: 6px 12px;
-        background: #f0f2f7;
-        border: 1px solid #dce3ff;
-        border-radius: 16px;
-        font-size: 11px;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: all 0.2s ease;
-        color: #718096;
-        font-weight: 500;
-        flex-shrink: 0;
-      }
-
-      .filter-btn.active {
-        background: #1d4769;
-        color: white;
-        border-color: #1d4769;
-      }
-
-      .filter-btn:hover {
-        transform: translateY(-1px);
-      }
-
-      .history-timeline {
-        flex: 1;
-        overflow-y: auto;
-        padding: 16px 12px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .history-timeline::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      .history-timeline::-webkit-scrollbar-thumb {
-        background: #dce3ff;
-        border-radius: 3px;
-      }
-
-      .history-item {
-        padding: 12px;
-        background: #f0f2f7;
-        border-radius: 8px;
-        border-left: 3px solid #2d5a8c;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        animation: slideInRight 0.3s ease-out;
-      }
-
-      @keyframes slideInRight {
-        from {
-          opacity: 0;
-          transform: translateX(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-
-      .history-item:hover {
-        background: #e6e9ef;
-        transform: translateX(4px);
-        box-shadow: 0 2px 6px rgba(76, 110, 245, 0.1);
-      }
-
-      .history-icon {
-        font-size: 14px;
-        margin-right: 8px;
-      }
-
-      .history-text {
-        font-size: 12px;
-        color: #2d3748;
-        line-height: 1.4;
-        margin-bottom: 6px;
-        font-weight: 500;
-      }
-
-      .history-time {
-        font-size: 11px;
-        color: #a0aec0;
-      }
-
-      .history-score {
-        display: inline-block;
-        background: #1d4769;
-        color: white;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: 600;
-        margin-top: 6px;
-      }
-
-      .view-again-btn {
-        display: inline-block;
-        background: #1d4769;
-        color: white;
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-size: 10px;
-        cursor: pointer;
-        margin-top: 6px;
-        border: none;
-        transition: all 0.2s ease;
-        font-weight: 600;
-      }
-
-      .view-again-btn:hover {
-        background: #3d54d4;
-        transform: scale(1.05);
-      }
-
-      .clear-history {
-        padding: 14px 16px;
-        border-top: 1px solid #f0f2f7;
-        text-align: center;
-      }
-
-      .clear-btn {
-        background: none;
-        border: none;
-        color: #e53e3e;
-        font-size: 12px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.2s ease;
-      }
-
-      .clear-btn:hover {
-        text-decoration: underline;
-      }
-
-      /* ===== FOOTER ===== */
-      .footer {
-        padding: 16px 28px;
-        background: white;
-        border-top: 1px solid #e6e9ef;
-        display: flex;
-        gap: 20px;
-        justify-content: center;
-        font-size: 12px;
-        color: #a0aec0;
-        height: auto;
-      }
-
-      .footer a {
-        color: #a0aec0;
-        text-decoration: none;
-        transition: color 0.2s ease;
-      }
-
-      .footer a:hover {
-        color: #1d4769;
-      }
-
-      .footer-divider {
-        color: #e6e9ef;
-      }
-
-      .version-badge {
-        font-weight: 600;
-        color: #718096;
-      }
-
-      /* ===== RESPONSIVE ===== */
-      @media (max-width: 1400px) {
-        .main-container {
-          grid-template-columns: 35% 40% 25%;
-        }
-      }
-
-      @media (max-width: 1200px) {
-        .main-container {
-          grid-template-columns: 1fr;
-          gap: 16px;
-        }
-
-        .left-panel,
-        .center-panel,
-        .right-panel {
-          display: none;
-        }
-
-        .left-panel.active,
-        .center-panel.active,
-        .right-panel.active {
-          display: flex;
-        }
-
-        .panel-tab-selector {
-          display: flex;
-          gap: 8px;
-          padding: 16px 24px;
-          border-bottom: 1px solid #e6e9ef;
-        }
-
-        .panel-tab {
-          padding: 8px 16px;
-          background: #f0f2f7;
-          border: 1px solid #dce3ff;
-          border-radius: 20px;
-          cursor: pointer;
-          font-size: 12px;
-          font-weight: 600;
-          color: #718096;
-          transition: all 0.2s ease;
-        }
-
-        .panel-tab.active {
-          background: #1d4769;
-          color: white;
-          border-color: #1d4769;
-        }
-      }
-
-      /* ===== EMPTY STATE ===== */
-      .empty-state {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        text-align: center;
-        color: #a0aec0;
-      }
-
-      .empty-icon {
-        font-size: 48px;
-        margin-bottom: 12px;
-        opacity: 0.5;
-      }
-
-      .empty-text {
-        font-size: 14px;
-        line-height: 1.6;
-      }
-    </style>
+    </script>
   </head>
-  <body>
+  <body class="bg-[#f7f9ff] h-screen overflow-hidden font-sans">
     <!-- Navigation Bar -->
-    <div class="navbar">
-      <div class="navbar-left">
-        <div class="logo-icon">M</div>
-        <div class="logo">Manabi</div>
+    <nav class="bg-white border-b border-slate-200 shadow-sm h-16 flex items-center justify-between px-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-gradient-to-br from-[#1d4769] to-[#2d5a8c] rounded-lg flex items-center justify-center text-white font-bold text-sm">
+          M
+        </div>
+        <span class="text-xl font-bold text-[#1d4769]">Manabi</span>
       </div>
-      <div class="navbar-center">
-        <div class="page-title">Learning Studio</div>
+      <div class="flex-1 text-center">
+        <h1 class="text-lg font-semibold text-slate-800">Learning Studio</h1>
       </div>
-      <div class="navbar-right">
-        <button class="icon-btn" title="Settings">⚙</button>
-        <button class="icon-btn" title="Profile">👤</button>
+      <div class="flex items-center gap-3">
+        <button class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-all duration-200 hover:scale-105" title="Menu">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+        <button class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-all duration-200 hover:scale-105" title="Settings">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+        </button>
       </div>
-    </div>
+    </nav>
 
-    <!-- Main Container -->
-    <div class="main-container">
-      <!-- LEFT PANEL: AI Chat Tutor -->
-      <div class="panel left-panel active">
-        <div class="panel-header">
-          <div class="panel-title">💬 Chat with Manabi AI</div>
-          <div class="panel-subtitle">
-            Ask anything. I'll adapt the explanation for your learning style.
-          </div>
+    <!-- Main Container: 2 Columns -->
+    <div class="flex h-[calc(100vh-4rem)] gap-4 p-4">
+      <!-- LEFT COLUMN: Chat Interface (35%) -->
+      <div class="w-[35%] bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
+        <!-- Chat Header -->
+        <div class="px-5 py-4 border-b border-slate-200">
+          <h2 class="text-lg font-bold text-slate-800">💬 Chat with Manabi AI</h2>
+          <p class="text-xs text-slate-500 mt-1">Ask anything. I'll adapt the explanation for your learning style.</p>
         </div>
 
-        <div class="chat-container" id="chatContainer">
-          <div class="message ai-message">
-            <div class="avatar">✨</div>
-            <div>
-              <div class="message-bubble ai-bubble">
-                Hi! I'm Manabi, your AI tutor. What would you like to learn
-                today? I can explain concepts visually, with analogies,
-                animations, or in any style you prefer.
-              </div>
-              <div class="action-buttons">
-                <button class="action-btn">Explain Simpler</button>
-                <button class="action-btn">Give Analogy</button>
+        <!-- Chat Messages Container -->
+        <div id="chatContainer" class="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+          <!-- Welcome Message -->
+          <div class="flex items-start gap-3 animate-fadeIn">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#1d4769] to-[#2d5a8c] flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+              ✨
+            </div>
+            <div class="flex-1">
+              <div class="bg-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-slate-800 max-w-[85%]">
+                Hi! I'm Manabi, your AI tutor. What would you like to learn today? I can explain concepts visually, with analogies, animations, or in any style you prefer.
               </div>
             </div>
           </div>
         </div>
 
-        <div class="suggested-prompts" id="suggestedPrompts">
-          <div
-            class="prompt-chip"
-            onclick="addPrompt('Explain photosynthesis visually')"
-          >
-             🎨 Explain visually
-          </div>
-          <div
-            class="prompt-chip"
-            onclick="addPrompt('Give me a real-life example')"
-          >
-             🌍 Real-life example
-          </div>
-          <div class="prompt-chip" onclick="addPrompt('Repeat this slower')">
-             🐢 Repeat slower
-          </div>
-          <div
-            class="prompt-chip"
-            onclick="addPrompt('Speak this explanation')"
-          >
-             🔊 Speak explanation
+        <!-- Suggested Prompts -->
+        <div class="px-4 py-3 border-t border-slate-200 overflow-x-auto">
+          <div class="flex gap-2">
+            <button onclick="addPrompt('Explain photosynthesis visually')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-full whitespace-nowrap transition-colors">
+              🎨 Explain visually
+            </button>
+            <button onclick="addPrompt('Give me a real-life example')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-full whitespace-nowrap transition-colors">
+              🌍 Real-life example
+            </button>
+            <button onclick="addPrompt('Explain with a diagram')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-full whitespace-nowrap transition-colors">
+              📊 Show diagram
+            </button>
           </div>
         </div>
 
-        <div class="input-area">
-          <input
-            type="text"
-            class="text-input"
-            id="chatInput"
-            placeholder="Type your question"
-            onkeypress="handleEnter(event)"
-          />
-          <button class="send-btn" onclick="sendMessage()" title="Send">
-            ➤
-          </button>
-        </div>
-      </div>
-
-      <!-- CENTER PANEL: Visual Learning -->
-      <div class="panel center-panel active">
-        <div class="panel-header">
-          <div class="panel-title">🎨 Visual Learning View</div>
-        </div>
-
-        <div class="mode-selector" id="modeSelector">
-          <div class="mode-chip active" onclick="switchMode('visual')">
-            Visual
-          </div>
-          <div class="mode-chip" onclick="switchMode('analogical')">
-            Analogical
-          </div>
-          <div class="mode-chip" onclick="switchMode('audio')">Audio</div>
-          <div class="mode-chip" onclick="switchMode('dynamic')">Dynamic</div>
-          <div class="mode-chip" onclick="switchMode('minimal')">Minimal</div>
-        </div>
-
-        <div class="visual-content" id="visualContent">
-          <div class="empty-state">
-            <div class="empty-icon"></div>
-            <div class="empty-text">
-              Ask a question to see visual learning content here
-            </div>
+        <!-- Input Area -->
+        <div class="px-4 py-4 border-t border-slate-200">
+          <div class="flex items-center gap-2">
+            <input
+              type="text"
+              id="chatInput"
+              placeholder="Type your question..."
+              class="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-full text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1d4769] focus:border-transparent transition-all"
+              onkeypress="handleEnter(event)"
+            />
+            <button
+              onclick="sendMessage()"
+              id="sendBtn"
+              class="w-10 h-10 rounded-full bg-[#1d4769] hover:bg-[#2d5a8c] text-white flex items-center justify-center transition-all duration-200 hover:scale-105 active:scale-95 flex-shrink-0"
+              title="Send"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+              </svg>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT PANEL: History Timeline -->
-      <div class="panel right-panel active">
-        <div class="panel-header">
-          <div class="panel-title"> History</div>
+      <!-- RIGHT COLUMN: Dynamic Learning Workspace (65%) -->
+      <div class="w-[65%] bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col overflow-hidden">
+        <!-- Workspace Header -->
+        <div class="px-5 py-4 border-b border-slate-200">
+          <h2 class="text-lg font-bold text-slate-800">🎨 Dynamic Learning Workspace</h2>
+          <p class="text-xs text-slate-500 mt-1">Visual explanations, diagrams, and learning materials appear here</p>
         </div>
 
-        <div class="filter-buttons" id="filterButtons">
-          <button class="filter-btn active" onclick="filterHistory('all')">
-            All
-          </button>
-          <button class="filter-btn" onclick="filterHistory('questions')">
-            Questions
-          </button>
-          <button class="filter-btn" onclick="filterHistory('visuals')">
-            Visuals
-          </button>
-          <button class="filter-btn" onclick="filterHistory('audio')">
-            Audio
-          </button>
-          <button class="filter-btn" onclick="filterHistory('examples')">
-            Examples
-          </button>
-          <button class="filter-btn" onclick="filterHistory('quizzes')">
-            Quizzes
-          </button>
-        </div>
-
-        <div class="history-timeline" id="historyTimeline">
-          <div class="empty-state">
-            <div class="empty-icon"></div>
-            <div class="empty-text">Your learning history will appear here</div>
+        <!-- Learning Style Selector -->
+        <div class="px-5 py-3 border-b border-slate-200 overflow-x-auto">
+          <div class="flex gap-2" id="modeSelector">
+            <button onclick="switchMode('visual')" class="mode-chip active px-4 py-2 bg-[#1d4769] text-white border border-[#1d4769] rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105">
+              Visual
+            </button>
+            <button onclick="switchMode('analogical')" class="mode-chip px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105">
+              Analogical
+            </button>
+            <button onclick="switchMode('audio')" class="mode-chip px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105">
+              Audio
+            </button>
+            <button onclick="switchMode('dynamic')" class="mode-chip px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105">
+              Dynamic
+            </button>
+            <button onclick="switchMode('minimal')" class="mode-chip px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-full text-xs font-medium whitespace-nowrap transition-all hover:scale-105">
+              Minimal
+            </button>
           </div>
         </div>
 
-        <div class="clear-history">
-          <button class="clear-btn" onclick="clearAllHistory()">
-            Clear History
-          </button>
+        <!-- Learning Cards Container -->
+        <div id="workspaceContainer" class="flex-1 overflow-y-auto px-5 py-5 space-y-4">
+          <!-- Empty State -->
+          <div id="emptyState" class="flex flex-col items-center justify-center h-full text-center text-slate-400">
+            <div class="text-5xl mb-4 opacity-50">📚</div>
+            <p class="text-sm">Ask a question to see learning content here</p>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer">
-      <a href="#">Help</a>
-      <span class="footer-divider"></span>
-      <a href="#">Privacy</a>
-      <span class="footer-divider"></span>
-      <a href="#">Terms</a>
-      <span class="footer-divider"></span>
-      <span class="version-badge">Manabi v1.0</span>
     </div>
 
     <script>
       // State Management
       const state = {
-        currentMode: "visual",
         messages: [],
-        history: [],
-        currentFilter: "all",
-        isMicActive: false,
+        learningCards: [],
+        cardCounter: 0,
+        currentLearningStyle: null, // Track current learning style preference
+        currentMode: 'visual' // Track current learning mode
       };
 
-      // Predefined responses based on learning modes
-      const responseLibrary = {
-        visual: {
-          title: "Visual Explanation",
-          content: `
-                    <div class="content-block">
-                        <div class="diagram"> Flowchart Diagram</div>
-                        <div class="flowchart">
-                            <div class="flowchart-step">
-                                <strong>Step 1:</strong> Understand the main concept
-                            </div>
-                            <div class="arrow"></div>
-                            <div class="flowchart-step">
-                                <strong>Step 2:</strong> Break down into smaller parts
-                            </div>
-                            <div class="arrow"></div>
-                            <div class="flowchart-step">
-                                <strong>Step 3:</strong> Connect with real examples
-                            </div>
-                            <div class="arrow"></div>
-                            <div class="flowchart-step">
-                                <strong>Step 4:</strong> Master through practice
-                            </div>
-                        </div>
-                    </div>
-                `,
-        },
-        analogical: {
-          title: "Real-Life Analogy",
-          content: `
-                    <div class="content-block">
-                        <div class="analogy-box">
-                            <div class="analogy-label"> Analogy</div>
-                            <p>Think of this concept like a tree:</p>
-                            <ul style="margin: 8px 0 0 16px; line-height: 1.8;">
-                                <li><strong>Roots</strong> = Foundation concepts</li>
-                                <li><strong>Trunk</strong> = Core principles</li>
-                                <li><strong>Branches</strong> = Applications</li>
-                                <li><strong>Leaves</strong> = Details and specifics</li>
-                            </ul>
-                        </div>
-                    </div>
-                `,
-        },
-        audio: {
-          title: "Audio Explanation",
-          content: `
-                    <div class="content-block">
-                        <div class="audio-player">
-                            <button class="play-btn"></button>
-                            <div class="progress-bar"><div class="progress-fill"></div></div>
-                            <div class="time-text">2:45</div>
-                        </div>
-                        <div style="margin-top: 12px;">
-                            <div class="transcript-box">
-                                "Let me explain this concept step by step. First, we need to understand the foundation... This is important because..."
-                            </div>
-                        </div>
-                    </div>
-                `,
-        },
-        dynamic: {
-          title: "Step-by-Step Animation",
-          content: `
-                    <div class="content-block">
-                        <div class="diagram" style="background: linear-gradient(135deg, #1d4769, #2d5a8c); color: white; animation: fadeInScale 0.8s ease-out;"> Step 1 of 4</div>
-                        <div style="text-align: center; color: #718096; font-size: 12px; margin-top: 12px;">Playing animation... </div>
-                    </div>
-                `,
-        },
-        minimal: {
-          title: "Concise Explanation",
-          content: `
-                    <div class="content-block">
-                        <div class="minimal-text">
-                            <p><strong>Definition:</strong> A concise explanation of the concept.</p>
-                            <p style="margin-top: 12px;"><strong>Key Points:</strong></p>
-                            <ul style="margin: 8px 0 0 16px; line-height: 1.8;">
-                                <li>Point one</li>
-                                <li>Point two</li>
-                                <li>Point three</li>
-                            </ul>
-                        </div>
-                    </div>
-                `,
-        },
+      // Learning Card Templates
+      const cardTemplates = {
+        diagram: (title, content) => ({
+          type: 'diagram',
+          title: title || 'Visual Diagram',
+          content: content || `
+            <div class="bg-gradient-to-br from-[#f0f4f8] to-[#e0e7ff] rounded-lg p-8 border-2 border-[#dce3ff] text-center">
+              <div class="text-5xl mb-4">📊</div>
+              <div class="space-y-3 mt-4">
+                <div class="bg-white rounded-lg p-4 border-l-4 border-[#1d4769] text-left">
+                  <strong class="text-[#1d4769]">Step 1:</strong> Understand the main concept
+                </div>
+                <div class="text-center text-[#1d4769] text-xl">↓</div>
+                <div class="bg-white rounded-lg p-4 border-l-4 border-[#1d4769] text-left">
+                  <strong class="text-[#1d4769]">Step 2:</strong> Break down into smaller parts
+                </div>
+                <div class="text-center text-[#1d4769] text-xl">↓</div>
+                <div class="bg-white rounded-lg p-4 border-l-4 border-[#1d4769] text-left">
+                  <strong class="text-[#1d4769]">Step 3:</strong> Connect with real examples
+                </div>
+              </div>
+            </div>
+          `
+        }),
+        analogy: (title, content) => ({
+          type: 'analogy',
+          title: title || 'Real-Life Analogy',
+          content: content || `
+            <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg p-6 border border-slate-200">
+              <div class="text-xs font-bold text-[#1d4769] uppercase tracking-wide mb-3">Analogy</div>
+              <p class="text-slate-800 mb-3">Think of this concept like a tree:</p>
+              <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
+                <li><strong>Roots</strong> = Foundation concepts</li>
+                <li><strong>Trunk</strong> = Core principles</li>
+                <li><strong>Branches</strong> = Applications</li>
+                <li><strong>Leaves</strong> = Details and specifics</li>
+              </ul>
+            </div>
+          `
+        }),
+        summary: (title, content) => ({
+          type: 'summary',
+          title: title || 'Summary',
+          content: content || `
+            <div class="bg-slate-50 rounded-lg p-6 border border-slate-200">
+              <p class="text-slate-800 mb-3"><strong>Definition:</strong> A concise explanation of the concept.</p>
+              <p class="text-slate-800 mb-2"><strong>Key Points:</strong></p>
+              <ul class="list-disc list-inside space-y-1 text-slate-700 ml-2">
+                <li>Point one</li>
+                <li>Point two</li>
+                <li>Point three</li>
+              </ul>
+            </div>
+          `
+        }),
+        visual: (title, content) => ({
+          type: 'visual',
+          title: title || 'Visual Explanation',
+          content: content || `
+            <div class="bg-gradient-to-br from-[#f0f4f8] to-[#e0e7ff] rounded-lg p-8 border-2 border-[#dce3ff] text-center">
+              <div class="text-5xl mb-4">📊</div>
+              <div class="space-y-3 mt-4">
+                <div class="bg-white rounded-lg p-4 border-l-4 border-[#1d4769] text-left">
+                  <strong class="text-[#1d4769]">Step 1:</strong> Understand the main concept
+                </div>
+                <div class="text-center text-[#1d4769] text-xl">↓</div>
+                <div class="bg-white rounded-lg p-4 border-l-4 border-[#1d4769] text-left">
+                  <strong class="text-[#1d4769]">Step 2:</strong> Break down into smaller parts
+                </div>
+                <div class="text-center text-[#1d4769] text-xl">↓</div>
+                <div class="bg-white rounded-lg p-4 border-l-4 border-[#1d4769] text-left">
+                  <strong class="text-[#1d4769]">Step 3:</strong> Connect with real examples
+                </div>
+                <div class="text-center text-[#1d4769] text-xl">↓</div>
+                <div class="bg-white rounded-lg p-4 border-l-4 border-[#1d4769] text-left">
+                  <strong class="text-[#1d4769]">Step 4:</strong> Master through practice
+                </div>
+              </div>
+            </div>
+          `
+        }),
+        analogical: (title, content) => ({
+          type: 'analogical',
+          title: title || 'Real-Life Analogy',
+          content: content || `
+            <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg p-6 border border-slate-200">
+              <div class="text-xs font-bold text-[#1d4769] uppercase tracking-wide mb-3">Analogy</div>
+              <p class="text-slate-800 mb-3">Think of this concept like a tree:</p>
+              <ul class="list-disc list-inside space-y-2 text-slate-700 ml-2">
+                <li><strong>Roots</strong> = Foundation concepts</li>
+                <li><strong>Trunk</strong> = Core principles</li>
+                <li><strong>Branches</strong> = Applications</li>
+                <li><strong>Leaves</strong> = Details and specifics</li>
+              </ul>
+            </div>
+          `
+        }),
+        dynamic: (title, content) => ({
+          type: 'dynamic',
+          title: title || 'Step-by-Step Animation',
+          content: content || `
+            <div class="bg-gradient-to-br from-[#1d4769] to-[#2d5a8c] rounded-lg p-8 border-2 border-[#1d4769] text-center text-white">
+              <div class="text-6xl mb-4 animate-pulse">🎬</div>
+              <div class="text-xl font-semibold mb-2">Step 1 of 4</div>
+              <div class="text-sm opacity-90">Playing animation...</div>
+              <div class="mt-6 flex justify-center gap-2">
+                <div class="w-3 h-3 bg-white rounded-full"></div>
+                <div class="w-3 h-3 bg-white/50 rounded-full"></div>
+                <div class="w-3 h-3 bg-white/50 rounded-full"></div>
+                <div class="w-3 h-3 bg-white/50 rounded-full"></div>
+              </div>
+            </div>
+          `
+        }),
+        minimal: (title, content) => ({
+          type: 'minimal',
+          title: title || 'Concise Explanation',
+          content: content || `
+            <div class="bg-slate-50 rounded-lg p-6 border border-slate-200">
+              <p class="text-slate-800 mb-3"><strong>Definition:</strong> A concise explanation of the concept.</p>
+              <p class="text-slate-800 mb-2"><strong>Key Points:</strong></p>
+              <ul class="list-disc list-inside space-y-1 text-slate-700 ml-2">
+                <li>Point one</li>
+                <li>Point two</li>
+                <li>Point three</li>
+              </ul>
+            </div>
+          `
+        }),
+        flowchart: (title, content) => ({
+          type: 'flowchart',
+          title: title || 'Process Flow',
+          content: content || `
+            <div class="bg-[#f0f4f8] rounded-lg p-6 border border-[#dce3ff]">
+              <div class="text-4xl text-center mb-4">🔄</div>
+              <div class="space-y-2">
+                <div class="bg-white rounded p-3 text-sm border-l-4 border-[#1d4769]">Start Process</div>
+                <div class="text-center text-[#1d4769]">→</div>
+                <div class="bg-white rounded p-3 text-sm border-l-4 border-[#1d4769]">Execute Action</div>
+                <div class="text-center text-[#1d4769]">→</div>
+                <div class="bg-white rounded p-3 text-sm border-l-4 border-[#1d4769]">Complete</div>
+              </div>
+            </div>
+          `
+        }),
+        simpler: (title, content) => ({
+          type: 'simpler',
+          title: title || 'Simplified Explanation',
+          content: content || `
+            <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg p-6 border border-slate-200">
+              <div class="text-xs font-bold text-[#1d4769] uppercase tracking-wide mb-3">Simplified Version</div>
+              <p class="text-slate-800 mb-3">Let me break this down in simpler terms:</p>
+              <div class="space-y-2 text-slate-700">
+                <p>• <strong>Basic idea:</strong> The core concept explained simply</p>
+                <p>• <strong>Why it matters:</strong> Real-world importance</p>
+                <p>• <strong>How it works:</strong> Simple step-by-step process</p>
+              </div>
+            </div>
+          `
+        }),
+        audio: (title, content) => ({
+          type: 'audio',
+          title: title || 'Audio Explanation',
+          content: content || `
+            <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg p-6 border border-slate-200">
+              <div class="flex items-center gap-4 mb-4">
+                <button class="w-12 h-12 rounded-full bg-[#1d4769] hover:bg-[#2d5a8c] text-white flex items-center justify-center transition-all hover:scale-105">
+                  <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path>
+                  </svg>
+                </button>
+                <div class="flex-1">
+                  <div class="h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-[#1d4769] rounded-full" style="width: 45%"></div>
+                  </div>
+                  <div class="text-xs text-slate-500 mt-1">2:45 / 6:12</div>
+                </div>
+              </div>
+              <div class="bg-white rounded-lg p-4 border border-slate-200 text-sm text-slate-700 italic">
+                "Let me explain this concept step by step. First, we need to understand the foundation... This is important because..."
+              </div>
+            </div>
+          `
+        }),
+        animation: (title, content) => ({
+          type: 'animation',
+          title: title || 'Step-by-Step Animation',
+          content: content || `
+            <div class="bg-gradient-to-br from-[#1d4769] to-[#2d5a8c] rounded-lg p-8 border-2 border-[#1d4769] text-center text-white">
+              <div class="text-6xl mb-4 animate-pulse">🎬</div>
+              <div class="text-xl font-semibold mb-2">Step 1 of 4</div>
+              <div class="text-sm opacity-90">Playing animation...</div>
+              <div class="mt-6 flex justify-center gap-2">
+                <div class="w-3 h-3 bg-white rounded-full"></div>
+                <div class="w-3 h-3 bg-white/50 rounded-full"></div>
+                <div class="w-3 h-3 bg-white/50 rounded-full"></div>
+                <div class="w-3 h-3 bg-white/50 rounded-full"></div>
+              </div>
+            </div>
+          `
+        })
       };
+
+      // Generate learning card based on message and learning style
+      function generateLearningCard(message, learningStyle = null) {
+        const lowerMessage = message.toLowerCase();
+        
+        // If learning style is specified, use it
+        if (learningStyle) {
+          state.currentLearningStyle = learningStyle;
+          // Map style names to template names
+          const styleMap = {
+            'simpler': 'simpler',
+            'analogy': 'analogy',
+            'diagram': 'diagram',
+            'animation': 'animation',
+            'visual': 'visual',
+            'analogical': 'analogical',
+            'audio': 'audio',
+            'dynamic': 'dynamic',
+            'minimal': 'minimal'
+          };
+          
+          const templateName = styleMap[learningStyle] || learningStyle;
+          if (cardTemplates[templateName]) {
+            return cardTemplates[templateName]();
+          }
+        }
+        
+        // Use current mode if no style specified
+        if (state.currentMode) {
+          const modeMap = {
+            'visual': 'visual',
+            'analogical': 'analogical',
+            'audio': 'audio',
+            'dynamic': 'dynamic',
+            'minimal': 'minimal'
+          };
+          const templateName = modeMap[state.currentMode] || 'visual';
+          if (cardTemplates[templateName]) {
+            return cardTemplates[templateName]();
+          }
+        }
+        
+        // Otherwise, determine from message content
+        const cardTypes = ['diagram', 'analogy', 'summary', 'flowchart'];
+        
+        if (lowerMessage.includes('diagram') || lowerMessage.includes('visual') || lowerMessage.includes('chart')) {
+          return cardTemplates.diagram('Visual Diagram', null);
+        } else if (lowerMessage.includes('analogy') || lowerMessage.includes('example') || lowerMessage.includes('like')) {
+          return cardTemplates.analogy('Real-Life Analogy', null);
+        } else if (lowerMessage.includes('summary') || lowerMessage.includes('explain') || lowerMessage.includes('what is')) {
+          return cardTemplates.summary('Concept Summary', null);
+        } else if (lowerMessage.includes('simple') || lowerMessage.includes('easier')) {
+          return cardTemplates.simpler('Simplified Explanation', null);
+        } else if (lowerMessage.includes('audio') || lowerMessage.includes('speak') || lowerMessage.includes('listen')) {
+          return cardTemplates.audio('Audio Explanation', null);
+        } else if (lowerMessage.includes('animation') || lowerMessage.includes('animate') || lowerMessage.includes('dynamic')) {
+          return cardTemplates.animation('Step-by-Step Animation', null);
+        } else {
+          // Default to visual
+          return cardTemplates.visual();
+        }
+      }
+
+      // Switch learning mode (from mode selector chips)
+      function switchMode(mode) {
+        state.currentMode = mode;
+        
+        // Update chip state
+        document.querySelectorAll('.mode-chip').forEach((chip) => {
+          chip.classList.remove('active', 'bg-[#1d4769]', 'text-white', 'border-[#1d4769]');
+          chip.classList.add('bg-slate-100', 'text-slate-700', 'border-slate-200');
+        });
+        
+        // Activate clicked chip
+        event.target.classList.add('active', 'bg-[#1d4769]', 'text-white', 'border-[#1d4769]');
+        event.target.classList.remove('bg-slate-100', 'text-slate-700', 'border-slate-200');
+        
+        // Update workspace content based on current mode
+        updateWorkspaceContent();
+      }
+
+      // Update workspace content based on current mode
+      function updateWorkspaceContent() {
+        const workspaceContainer = document.getElementById('workspaceContainer');
+        const emptyState = document.getElementById('emptyState');
+        
+        // If there are no cards, show empty state
+        if (state.learningCards.length === 0) {
+          if (!emptyState) {
+            workspaceContainer.innerHTML = `
+              <div id="emptyState" class="flex flex-col items-center justify-center h-full text-center text-slate-400">
+                <div class="text-5xl mb-4 opacity-50">📚</div>
+                <p class="text-sm">Ask a question to see learning content here</p>
+              </div>
+            `;
+          }
+          return;
+        }
+        
+        // Get the last learning card and regenerate it with current mode
+        if (state.learningCards.length > 0) {
+          const lastCard = state.learningCards[state.learningCards.length - 1];
+          const lastUserMessage = state.messages.length > 0 
+            ? state.messages[state.messages.length - 1] 
+            : 'Explain this concept';
+          
+          // Map mode names to card template names
+          const modeMap = {
+            'visual': 'visual',
+            'analogical': 'analogical',
+            'audio': 'audio',
+            'dynamic': 'animation',
+            'minimal': 'minimal'
+          };
+          
+          const cardType = modeMap[state.currentMode] || 'visual';
+          const newCard = generateLearningCard(lastUserMessage, cardType);
+          
+          // Replace the last card
+          const lastCardElement = workspaceContainer.lastElementChild;
+          if (lastCardElement && lastCardElement.id.startsWith('card-')) {
+            lastCardElement.remove();
+          }
+          
+          addLearningCard(newCard);
+        }
+      }
+
+      // Handle learning style action button click
+      function handleLearningStyle(style) {
+        // Get the last user message from state
+        const lastUserMessage = state.messages.length > 0 
+          ? state.messages[state.messages.length - 1] 
+          : 'Explain this concept';
+        
+        // Show thinking state
+        showThinkingState();
+        
+        // Generate appropriate response
+        let response = '';
+        switch(style) {
+          case 'simpler':
+            response = "Let me explain this in simpler terms...";
+            break;
+          case 'analogy':
+            response = "Here's a real-life analogy to help you understand...";
+            break;
+          case 'diagram':
+            response = "Let me create a visual diagram for you...";
+            break;
+          case 'animation':
+            response = "I'll show you this step-by-step with an animation...";
+            break;
+          default:
+            response = "Let me adapt this explanation for you...";
+        }
+        
+        setTimeout(() => {
+          hideThinkingState();
+          
+          // Add AI message
+          addMessageToChat(response, 'ai', true);
+          
+          // Add learning card with the selected style
+          const card = generateLearningCard(lastUserMessage, style);
+          addLearningCard(card);
+        }, 1000);
+      }
 
       // Add message to chat
       function sendMessage() {
-        const input = document.getElementById("chatInput");
+        const input = document.getElementById('chatInput');
         const message = input.value.trim();
 
         if (!message) return;
 
+        // Disable input and show thinking state
+        input.disabled = true;
+        showThinkingState();
+
         // Add user message
-        addMessageToChat(message, "user");
-        addToHistory(message, "questions");
+        addMessageToChat(message, 'user');
+        
+        // Store message in state
+        state.messages.push(message);
 
-        // Simulate AI response
+        // Simulate AI thinking and response
         setTimeout(() => {
-          const response =
-            "I'll explain this with a visual breakdown. Here's the concept step by step...";
-          addMessageToChat(response, "ai");
-          updateVisualContent();
-        }, 800);
+          hideThinkingState();
+          const response = generateAIResponse(message);
+          addMessageToChat(response, 'ai', true); // Show action buttons
+          
+          // Add learning card to workspace
+          const card = generateLearningCard(message);
+          addLearningCard(card);
+          
+          input.disabled = false;
+          input.focus();
+        }, 1500 + Math.random() * 1000); // Random delay between 1.5-2.5 seconds
 
-        input.value = "";
+        input.value = '';
       }
 
-      // Add message from prompt chip
-      function addPrompt(text) {
-        document.getElementById("chatInput").value = text;
-        sendMessage();
+      // Generate AI response
+      function generateAIResponse(message) {
+        const responses = [
+          "I'll explain this with a visual breakdown. Here's the concept step by step...",
+          "Let me break this down for you in a way that's easy to understand...",
+          "Great question! Here's a comprehensive explanation with visual aids...",
+          "I'll help you understand this concept through multiple learning approaches...",
+          "Let me create a visual explanation that adapts to your learning style..."
+        ];
+        return responses[Math.floor(Math.random() * responses.length)];
+      }
+
+      // Show thinking state
+      function showThinkingState() {
+        const chatContainer = document.getElementById('chatContainer');
+        const thinkingDiv = document.createElement('div');
+        thinkingDiv.id = 'thinkingState';
+        thinkingDiv.className = 'flex items-start gap-3 animate-fadeIn';
+        thinkingDiv.innerHTML = `
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#1d4769] to-[#2d5a8c] flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+            ✨
+          </div>
+          <div class="flex-1">
+            <div class="bg-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-slate-600 max-w-[85%]">
+              <div class="flex gap-1">
+                <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0s"></span>
+                <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                <span class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
+              </div>
+            </div>
+          </div>
+        `;
+        chatContainer.appendChild(thinkingDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      // Hide thinking state
+      function hideThinkingState() {
+        const thinkingState = document.getElementById('thinkingState');
+        if (thinkingState) {
+          thinkingState.remove();
+        }
       }
 
       // Add message to chat display
-      function addMessageToChat(message, sender) {
-        const chatContainer = document.getElementById("chatContainer");
+      function addMessageToChat(message, sender, showActions = false) {
+        const chatContainer = document.getElementById('chatContainer');
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `flex items-start gap-3 animate-fadeIn ${sender === 'user' ? 'flex-row-reverse' : ''}`;
 
-        if (chatContainer.querySelector(".empty-state")) {
-          chatContainer.innerHTML = "";
-        }
-
-        const messageDiv = document.createElement("div");
-        messageDiv.className = `message ${
-          sender === "user" ? "user-message" : "ai-message"
-        }`;
-
-        if (sender === "user") {
+        if (sender === 'user') {
           messageDiv.innerHTML = `
-                    <div class="message-bubble user-bubble">${escapeHtml(
-                      message
-                    )}</div>
-                    <div class="avatar user-avatar">You</div>
-                `;
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#1d4769] to-[#2d5a8c] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+              You
+            </div>
+            <div class="flex-1 flex justify-end">
+              <div class="bg-[#1d4769] text-white rounded-2xl rounded-tr-sm px-4 py-3 text-sm max-w-[85%]">
+                ${escapeHtml(message)}
+              </div>
+            </div>
+          `;
         } else {
+          const messageId = `msg-${Date.now()}`;
           messageDiv.innerHTML = `
-                    <div class="avatar"></div>
-                    <div>
-                        <div class="message-bubble ai-bubble">${escapeHtml(
-                          message
-                        )}</div>
-                        <div class="action-buttons">
-                            <button class="action-btn">Explain Simpler</button>
-                            <button class="action-btn">Give Analogy</button>
-                            <button class="action-btn">Show Animation</button>
-                            <button class="action-btn">Explain with Diagram</button>
-                        </div>
-                    </div>
-                `;
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#1d4769] to-[#2d5a8c] flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+              ✨
+            </div>
+            <div class="flex-1">
+              <div class="bg-slate-100 rounded-2xl rounded-tl-sm px-4 py-3 text-sm text-slate-800 max-w-[85%]">
+                ${escapeHtml(message)}
+              </div>
+              ${showActions ? `
+                <div class="flex flex-wrap gap-2 mt-2 ml-2" id="action-buttons-${messageId}">
+                  <button onclick="handleLearningStyle('simpler')" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors">
+                    💡 Explain Simpler
+                  </button>
+                  <button onclick="handleLearningStyle('analogy')" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors">
+                    🌳 Give Analogy
+                  </button>
+                  <button onclick="handleLearningStyle('diagram')" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors">
+                    📊 Show Diagram
+                  </button>
+                  <button onclick="handleLearningStyle('animation')" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition-colors">
+                    🎬 Show Animation
+                  </button>
+                </div>
+              ` : ''}
+            </div>
+          `;
+          messageDiv.id = messageId;
         }
 
         chatContainer.appendChild(messageDiv);
         chatContainer.scrollTop = chatContainer.scrollHeight;
       }
 
+      // Add learning card to workspace
+      function addLearningCard(card) {
+        const workspaceContainer = document.getElementById('workspaceContainer');
+        const emptyState = document.getElementById('emptyState');
+        
+        if (emptyState) {
+          emptyState.remove();
+        }
+
+        state.cardCounter++;
+        const cardId = `card-${state.cardCounter}`;
+        
+        // Store card in state
+        state.learningCards.push(card);
+        
+        const cardDiv = document.createElement('div');
+        cardDiv.id = cardId;
+        cardDiv.className = 'bg-white rounded-lg border border-slate-200 shadow-sm p-5 animate-fadeIn';
+        
+        const iconMap = {
+          diagram: '📊',
+          analogy: '💡',
+          summary: '📝',
+          flowchart: '🔄',
+          simpler: '💡',
+          audio: '🔊',
+          animation: '🎬',
+          visual: '📊',
+          analogical: '🌳',
+          dynamic: '🎬',
+          minimal: '📝'
+        };
+
+        cardDiv.innerHTML = `
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-xl">${iconMap[card.type] || '📄'}</span>
+              <h3 class="text-base font-bold text-slate-800">${card.title}</h3>
+            </div>
+            <span class="text-xs text-slate-400">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+          </div>
+          <div class="mt-3">
+            ${card.content}
+          </div>
+        `;
+
+        workspaceContainer.appendChild(cardDiv);
+        workspaceContainer.scrollTop = workspaceContainer.scrollHeight;
+      }
+
+      // Add prompt from chip
+      function addPrompt(text) {
+        document.getElementById('chatInput').value = text;
+        sendMessage();
+      }
+
       // Handle Enter key
       function handleEnter(event) {
-        if (event.key === "Enter") {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          event.preventDefault();
           sendMessage();
-        }
-      }
-
-      // Switch learning mode
-      function switchMode(mode) {
-        state.currentMode = mode;
-
-        // Update chip state
-        document.querySelectorAll(".mode-chip").forEach((chip) => {
-          chip.classList.remove("active");
-        });
-        event.target.classList.add("active");
-
-        updateVisualContent();
-      }
-
-      // Update visual content based on current mode
-      function updateVisualContent() {
-        const visualContent = document.getElementById("visualContent");
-        const modeData = responseLibrary[state.currentMode];
-
-        visualContent.innerHTML = `
-                <div style="padding: 8px 0;">
-                    <h3 style="font-size: 14px; font-weight: 600; color: #1A202C; margin-bottom: 12px;">${modeData.title}</h3>
-                </div>
-                ${modeData.content}
-                <div class="visual-controls">
-                    <button class="control-btn"> Re-generate Explanation</button>
-                    <button class="control-btn secondary"> Add to Notes</button>
-                    <button class="control-btn secondary"> Fullscreen</button>
-                </div>
-            `;
-
-        addToHistory(`${modeData.title} - ${state.currentMode}`, "visuals");
-      }
-
-      // Add item to history
-      function addToHistory(text, type) {
-        const historyItem = {
-          text: text.length > 50 ? text.substring(0, 50) + "..." : text,
-          type: type,
-          time: getTimeAgo(),
-          fullText: text,
-          timestamp: Date.now(),
-        };
-
-        state.history.unshift(historyItem);
-        updateHistoryDisplay();
-      }
-
-      // Update history display
-      function updateHistoryDisplay() {
-        const timeline = document.getElementById("historyTimeline");
-        const filter = state.currentFilter;
-
-        let filteredHistory = state.history;
-        if (filter !== "all") {
-          filteredHistory = state.history.filter(
-            (item) => item.type === filter
-          );
-        }
-
-        if (filteredHistory.length === 0) {
-          timeline.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon"></div>
-                        <div class="empty-text">No items in this filter</div>
-                    </div>
-                `;
-          return;
-        }
-
-        timeline.innerHTML = filteredHistory
-          .map(
-            (item, index) => `
-                <div class="history-item" onclick="restoreFromHistory(${index})">
-                    <div style="display: flex; gap: 8px; align-items: flex-start;">
-                        <span class="history-icon">${getIconForType(
-                          item.type
-                        )}</span>
-                        <div style="flex: 1;">
-                            <div class="history-text">${escapeHtml(
-                              item.text
-                            )}</div>
-                            <div class="history-time">${item.time}</div>
-                            ${
-                              item.type === "quizzes"
-                                ? `<div class="history-score">7/10</div>`
-                                : ""
-                            }
-                            ${
-                              item.type === "visuals"
-                                ? `<button class="view-again-btn" onclick="event.stopPropagation(); viewAgain()">View Again</button>`
-                                : ""
-                            }
-                        </div>
-                    </div>
-                </div>
-            `
-          )
-          .join("");
-      }
-
-      // Get icon for history type
-      function getIconForType(type) {
-        const icons = {
-          questions: "",
-          visuals: "",
-          audio: "",
-          examples: "",
-          quizzes: "",
-        };
-        return icons[type] || "";
-      }
-
-      // Get relative time string
-      function getTimeAgo() {
-        const times = [
-          "Just now",
-          "1 min ago",
-          "5 mins ago",
-          "15 mins ago",
-          "1 hour ago",
-          "2 hours ago",
-        ];
-        return times[Math.floor(Math.random() * times.length)];
-      }
-
-      // Filter history
-      function filterHistory(filter) {
-        state.currentFilter = filter;
-
-        // Update filter buttons
-        document.querySelectorAll(".filter-btn").forEach((btn) => {
-          btn.classList.remove("active");
-        });
-        event.target.classList.add("active");
-
-        updateHistoryDisplay();
-      }
-
-      // Clear all history
-      function clearAllHistory() {
-        if (confirm("Are you sure you want to clear all history?")) {
-          state.history = [];
-          updateHistoryDisplay();
-        }
-      }
-
-      // Restore from history
-      function restoreFromHistory(index) {
-        const item = state.history[index];
-        document.getElementById("chatInput").value = item.fullText;
-      }
-
-      // View again
-      function viewAgain() {
-        updateVisualContent();
-      }
-
-      // Toggle microphone
-      function toggleMic() {
-        const micBtn = document.getElementById("micBtn");
-        state.isMicActive = !state.isMicActive;
-
-        if (state.isMicActive) {
-          micBtn.classList.add("active");
-          micBtn.textContent = "";
-          micBtn.style.background = "#E53E3E";
-        } else {
-          micBtn.classList.remove("active");
-          micBtn.textContent = "";
-          micBtn.style.background = "";
-          addMessageToChat(
-            'Voice input received: "Can you explain photosynthesis?"',
-            "user"
-          );
         }
       }
 
       // Utility function to escape HTML
       function escapeHtml(text) {
-        const div = document.createElement("div");
+        const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
       }
 
-      // Initial history items
-      function initializeSampleHistory() {
-        addToHistory("How does photosynthesis work?", "questions");
-        addToHistory("Visual diagram of the carbon cycle", "visuals");
-        addToHistory("Real-world application example", "examples");
-        addToHistory("Quiz: Photosynthesis Basics", "quizzes");
-      }
-
-      // Initialize on load
-      window.addEventListener("DOMContentLoaded", () => {
-        initializeSampleHistory();
-      });
-
-      // Add fade-in-scale animation for dynamic mode
-      const style = document.createElement("style");
+      // Add custom animations
+      const style = document.createElement('style');
       style.textContent = `
-            @keyframes fadeInScale {
-                from { opacity: 0; transform: scale(0.8); }
-                to { opacity: 1; transform: scale(1); }
-            }
-        `;
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+      `;
       document.head.appendChild(style);
     </script>
   </body>
 </html>
-
 
